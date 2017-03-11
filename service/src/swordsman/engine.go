@@ -51,6 +51,8 @@ func (e *Engine) NewPlayer() int64 {
 	e.ObjectContainer.WriteObject(player)
 	log.Info("New player created, id ", player.ID)
 
+
+
 	return player.ID
 }
 
@@ -136,6 +138,10 @@ func (e *Engine) parseEvent(event string) {
 			object.Name = name
 		}
 		e.sendWorld(playerID)
+	}
+	case "T": {
+		// mouse movement
+
 	}
 		default:
 		// nothing

@@ -17,10 +17,10 @@ interface Renderable {
 }
 
 class Shape {
-    id: string
+    id: number
     nodes: Point[]
 
-    constructor(id: string, nodes?: Point[]) {
+    constructor(id: number, nodes?: Point[]) {
         this.id = id
         this.nodes = nodes || []
     }

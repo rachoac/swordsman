@@ -1,8 +1,8 @@
 import {Shape, Point} from "./shape";
-import {StringKeyedMap} from "./util"
+import {NumberKeyedMap} from "./util"
 
 export default class Scene {
-    shapes: StringKeyedMap<Shape>
+    shapes: NumberKeyedMap<Shape>
     processing: any
     private first?: Point
     private last?: Point
@@ -16,7 +16,7 @@ export default class Scene {
         this.shapes[shape.id] = shape
     }
 
-    getShape(id: string): Shape {
+    getShape(id: number): Shape {
         return this.shapes[id]
     }
 
@@ -35,8 +35,8 @@ export default class Scene {
     }
 
     render() {
-        let keys: string[] = Object.keys(this.shapes)
-        keys.forEach( k => this.shapes[k].visitNodes(this))
+        let keys: number[] = Object.keys(this.shapes).map(k => parseInt(k))
+        keys.forEach(k => this.shapes[k].visitNodes(this))
 
         if (this.first && this.last) {
             // wrap around to the first point

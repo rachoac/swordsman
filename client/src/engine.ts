@@ -1,5 +1,4 @@
 import Scene from "./scene";
-import {Shape, Point} from "./shape";
 interface Client {
     send(value: string): void
 }
@@ -17,13 +16,6 @@ export default class Engine {
         this.mouseMovedHandling = this.mouseMovedHandling.bind(this)
         this.keyHandling = this.keyHandling.bind(this)
         this.scene = new Scene(processing)
-
-        let shape: Shape = new Shape("1", [])
-        shape.addNode(new Point(100, 100))
-        shape.addNode(new Point(200, 100))
-        shape.addNode(new Point(200, 200))
-        shape.addNode(new Point(100, 200))
-        this.scene.addShape(shape)
     }
 
     restart() {
@@ -34,11 +26,11 @@ export default class Engine {
     }
 
     mouseMovedHandling() {
-        // let mouseX = this.processing.mouseX
-        // let mouseY = this.processing.mouseY
-        // if (this.sessionID) {
-        //     this.client.send(`T:${this.sessionID}:${mouseX}:${mouseY}`)
-        // }
+        let mouseX = this.processing.mouseX
+        let mouseY = this.processing.mouseY
+        if (this.sessionID) {
+            this.client.send(`T:${this.sessionID}:${mouseX}:${mouseY}`)
+        }
     }
 
     update() {
