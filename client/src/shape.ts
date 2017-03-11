@@ -1,6 +1,11 @@
 class Point {
     x: number
     y: number
+
+    constructor(x: number, y: number) {
+        this.x = x
+        this.y = y
+    }
 }
 
 interface ShapeVisitor {
@@ -15,9 +20,9 @@ class Shape {
     id: string
     nodes: Point[]
 
-    constructor(id: string, nodes: Point[]) {
+    constructor(id: string, nodes?: Point[]) {
         this.id = id
-        this.nodes = nodes
+        this.nodes = nodes || []
     }
 
     addNode(node: Point) {

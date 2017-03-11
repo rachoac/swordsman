@@ -9,6 +9,7 @@ export default class Scene {
 
     constructor(processing: any) {
         this.processing = processing
+        this.shapes = {}
     }
 
     addShape(shape: Shape) {
@@ -20,12 +21,14 @@ export default class Scene {
     }
 
     visit(point: Point) {
-        if (this.first !== undefined) {
+        if (!this.first) {
             this.first = point
+            this.last = point
             return
         }
 
         if (this.last) {
+            console.log(this.last.x, this.last.y, point.x, point.y)
             this.processing.line(this.last.x, this.last.y, point.x, point.y)
             this.last = point
         }

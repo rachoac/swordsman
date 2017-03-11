@@ -1,3 +1,5 @@
+import Scene from "./scene";
+import {Shape, Point} from "./shape";
 interface Client {
     send(value: string): void
 }
@@ -8,11 +10,20 @@ export default class Engine {
     playerName: string
     connected: boolean
     processing: any
+    scene: Scene
     constructor(processing: any, playerName: string) {
         this.playerName = playerName
         this.processing = processing
         this.mouseMovedHandling = this.mouseMovedHandling.bind(this)
         this.keyHandling = this.keyHandling.bind(this)
+        this.scene = new Scene(processing)
+
+        let shape: Shape = new Shape("1", [])
+        shape.addNode(new Point(100, 100))
+        shape.addNode(new Point(200, 100))
+        shape.addNode(new Point(200, 200))
+        shape.addNode(new Point(100, 200))
+        this.scene.addShape(shape)
     }
 
     restart() {
@@ -32,7 +43,9 @@ export default class Engine {
 
     update() {
         this.processing.background(0, 0, 0);
-        this.processing.text("Hi there!", this.processing.width - 100, 30);
+        this.processing.fill(255, 255, 255)
+        this.processing.stroke(255, 255, 255)
+        this.scene.render()
     }
 
     onSocketClose(evt: any) {
