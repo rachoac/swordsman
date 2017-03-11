@@ -1,4 +1,5 @@
 import Scene from "./scene";
+import {Shape, Point} from "./shape";
 interface Client {
     send(value: string): void
 }
@@ -60,6 +61,7 @@ export default class Engine {
 
             switch(opCode) {
                 case 'ID': this.handleID(data); break;
+                case 'R': this.handleShape(data); break;
                 default:
                     break;
             }
@@ -93,5 +95,16 @@ export default class Engine {
         console.log("Got ID: " + data[0])
         this.sessionID = parseInt(data[0])
         this.client.send(`I:${this.sessionID}:${this.playerName}`)
+    }
+
+    private handleShape(data: string[]) {
+        const [ id, x1, y1, x2, y2, x3, y3, x4, y4 ]: number[] = data.map(s => parseInt(s))
+        let shape: Shape = this.scene.getShape(id)
+        if (!shape) {
+            shape = new Shape(id)
+            this.scene.addShape(shape)
+        }
+        shape.clear()
+        shape.addNode(new Point(x1, y1), new Point(x2, y2), new Point(x3, y3), new Point(x4, y4))
     }
 }

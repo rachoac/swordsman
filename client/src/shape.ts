@@ -25,8 +25,12 @@ class Shape {
         this.nodes = nodes || []
     }
 
-    addNode(node: Point) {
-        this.nodes.push(node)
+    addNode(...nodes: Point[]) {
+        nodes.forEach( n => this.nodes.push(n))
+    }
+
+    clear() {
+        this.nodes = []
     }
 
     visitNodes(visitor: ShapeVisitor): void {

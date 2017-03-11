@@ -1,4 +1,4 @@
-package main
+package game
 
 import (
 	"sync"
@@ -14,6 +14,7 @@ type Object struct {
 
 	Name     string
 	Score    int64
+	Scene    *Scene
 }
 
 type ObjectContainer struct {

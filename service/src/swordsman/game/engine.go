@@ -1,4 +1,4 @@
-package main
+package game
 
 import (
 	"time"
@@ -18,6 +18,7 @@ type Engine struct {
 	ProtocolHandler *ProtocolHandler
 
 	hub *Hub
+	seq int64
 }
 
 func NewEngine(
@@ -51,9 +52,25 @@ func (e *Engine) NewPlayer() int64 {
 	e.ObjectContainer.WriteObject(player)
 	log.Info("New player created, id ", player.ID)
 
+	scene := NewScene(player.ID, 250, 50)
+	e.seq++
+	scene.AddRect(NewRect(e.seq, 76, 30, 41, 38, false))
+	e.seq++
+	scene.AddRect(NewRect(e.seq, 60, 70, 68, 64, false))
+	e.seq++
+	scene.AddRect(NewRect(e.seq, 65, 134, 56, 36, false))
 
+	player.Scene = scene
+
+	e.broadcastScene(scene)
 
 	return player.ID
+}
+
+func (e *Engine) broadcastScene(scene *Scene) {
+	for _, rect := range scene.Rects {
+		e.broadcast(e.ProtocolHandler.asRect(rect))
+	}
 }
 
 func (e *Engine) broadcast(message string) {
@@ -111,6 +128,12 @@ func (e *Engine) MainLoop() {
 			e.Tick = 0
 		}
 
+		for _, object := range e.ObjectContainer.GetObjectsByType("Player") {
+			scene := object.Scene
+			scene.SetPosition(object.X, object.Y)
+			e.broadcastScene(scene)
+		}
+
 		// sleep for an interval
 		time.Sleep(30 * time.Millisecond)
 	}
@@ -141,7 +164,15 @@ func (e *Engine) parseEvent(event string) {
 	}
 	case "T": {
 		// mouse movement
+		playerID :=  StringToInt64(parts[1])
+		x :=  StringToInt64(parts[2])
+		//y :=  StringToInt64(parts[3])
 
+		object := e.ObjectContainer.GetObject(playerID)
+		if object != nil {
+			object.X = x
+			object.Y = object.Y
+		}
 	}
 		default:
 		// nothing

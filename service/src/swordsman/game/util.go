@@ -1,4 +1,4 @@
-package main
+package game
 
 import (
 	"math"
@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"os"
 	"io/ioutil"
+	"fmt"
 )
 
 func RandomNumber(min, max int64) int64 {
@@ -20,6 +21,26 @@ func RandomBool() bool {
 
 func Int64ToString(n int64) string {
 	return strconv.FormatInt(n, 10)
+}
+
+func Float64ToInt64(f float64) int64 {
+	s := fmt.Sprintf("%.0f", f)
+	if i, err := strconv.Atoi(s); err == nil {
+		return int64(i)
+	}
+	panic("could not convert")
+	return toint(f)
+}
+
+func toint(f float64) int64 {
+	if f < 0 {
+		return int64(f - 0.5)
+	}
+	return int64(f + 0.5)
+}
+
+func Round(x, unit float64) float64 {
+	return float64(int64(x/unit+0.5)) * unit
 }
 
 func StringToInt64(s string) int64 {

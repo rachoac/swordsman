@@ -28,7 +28,6 @@ export default class Scene {
         }
 
         if (this.last) {
-            console.log(this.last.x, this.last.y, point.x, point.y)
             this.processing.line(this.last.x, this.last.y, point.x, point.y)
             this.last = point
         }
@@ -36,15 +35,17 @@ export default class Scene {
 
     render() {
         let keys: number[] = Object.keys(this.shapes).map(k => parseInt(k))
-        keys.forEach(k => this.shapes[k].visitNodes(this))
+        keys.forEach(k => {
+            let shape: Shape = this.shapes[k]
+            shape.visitNodes(this)
 
-        if (this.first && this.last) {
-            // wrap around to the first point
-            this.processing.line(this.last.x, this.last.y, this.first.x, this.first.y)
-        }
+            if (this.first && this.last) {
+                // wrap around to the first point
+                this.processing.line(this.last.x, this.last.y, this.first.x, this.first.y)
+            }
 
-        this.first = undefined
-        this.last = undefined
-
+            this.first = undefined
+            this.last = undefined
+        })
     }
 }

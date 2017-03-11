@@ -1,7 +1,7 @@
 // Copyright 2013 The Gorilla WebSocket Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
-package main
+package game
 
 import (
 	"strconv"
@@ -26,7 +26,7 @@ type Hub struct {
 	unregister chan *Client
 }
 
-func newHub(engine *Engine) *Hub {
+func NewHub(engine *Engine) *Hub {
 	return &Hub{
 		engine: engine,
 		broadcast:  make(chan []byte),
@@ -53,7 +53,7 @@ func (h *Hub) sendToAll(message []byte) {
 	}
 }
 
-func (h *Hub) run() {
+func (h *Hub) Run() {
 	for {
 		select {
 		case client := <-h.register:

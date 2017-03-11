@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"swordsman/game"
 )
 
 var addr = flag.String("addr", ":8080", "http service address")
@@ -25,14 +26,14 @@ func serveHome(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	flag.Parse()
-	engine := NewEngine(1000, 800)
+	engine := game.NewEngine(1000, 800)
 	engine.Initialize()
-	hub := newHub(engine)
+	hub := game.NewHub(engine)
 	engine.SetHub(hub)
-	go hub.run()
+	go hub.Run()
 	http.HandleFunc("/", serveHome)
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		serveWs(hub, w, r)
+		game.ServeWs(hub, w, r)
 	})
 	err := http.ListenAndServe(*addr, nil)
 	if err != nil {
