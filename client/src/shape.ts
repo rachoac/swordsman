@@ -87,14 +87,15 @@ class Shape {
         }
 
         let containerOrigin: Point = this.parent.getPosition()
+        let anchor: Point = this.nodes[0]
 
         this.visitNodes( { visit: (point: Point) => {
-            let x: number = point.originalX
-            let y: number = point.originalY - (this.id ==2 ? 50 : 0)
+            let x: number = point.originalX - anchor.originalX
+            let y: number = point.originalY - anchor.originalY
             let rotated: Point = this.rotatePoint(x, y, this.rotation)
 
-            point.x = rotated.x + this.offsetX + this.translateX + containerOrigin.x
-            point.y = rotated.y + this.offsetY + this.translateY + containerOrigin.y + (this.id ==2 ? 50 : 0)
+            point.x = rotated.x + this.offsetX + this.translateX + containerOrigin.x + anchor.originalX
+            point.y = rotated.y + this.offsetY + this.translateY + containerOrigin.y + anchor.originalY
         }})
 
         this.visitNodes( { visit: (point: Point) => {
