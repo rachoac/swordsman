@@ -39,6 +39,13 @@ func toint(f float64) int64 {
 	return int64(f + 0.5)
 }
 
+func RoundToInt32(a float64) int32 {
+	if a < 0 {
+		return int32(a - 0.5)
+	}
+	return int32(a + 0.5)
+}
+
 func Round(x, unit float64) float64 {
 	return float64(int64(x/unit+0.5)) * unit
 }

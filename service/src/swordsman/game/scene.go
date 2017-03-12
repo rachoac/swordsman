@@ -1,13 +1,10 @@
 package game
 
-import (
-	"fmt"
-)
-
 type Scene struct {
 	ID int64
 	Position *Point
 	Rects []*Rect
+	LastRotation float64
 }
 
 func NewScene(ID int64, x int64, y int64) *Scene {
@@ -48,22 +45,6 @@ func (s *Scene) SetPosition(x int64, y int64) {
 	}
 }
 
-func (s *Scene) Rotate(theta float64) *Scene {
-	for _, rect := range s.Rects {
-		rect.
-			Translate(-s.Position.X, -s.Position.Y).
-			Rotate(theta).
-			Translate(s.Position.X, s.Position.Y)
-
-		fmt.Println(rect.Points[0])
-		fmt.Println(rect.Points[1])
-		fmt.Println(rect.Points[2])
-		fmt.Println(rect.Points[3])
-		fmt.Println("-------")
-	}
-
-	return s
-}
 
 func (s *Scene) Visit(visitor func(*Point)) {
 	for _, rect := range s.Rects {

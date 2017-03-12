@@ -1,8 +1,14 @@
-hash: 27d9f47b571db454110450a087675bd080b8fb147d36b100e05e830e1ab6fc5e
-updated: 2017-03-02T00:35:51.447902428-08:00
+hash: 74270103a17aa4c25c7d60861da1917bcb50c878d21df4c32540ebcd8969285b
+updated: 2017-03-11T11:52:44.929522098-08:00
 imports:
 - name: github.com/gorilla/websocket
-  version: 4873052237e4eeda85cf50c071ef33836fe8e139
+  version: b258b4fadb573ac412f187b9f31974ea99d32f50
+- name: github.com/shopspring/decimal
+  version: 3526cd0bdb7f64e1178943b7dee81a0cc3d86a69
 - name: github.com/Sirupsen/logrus
-  version: 0208149b40d863d2c1a2f8fe5753096a9cf2cc8b
+  version: 1deb2db2a6fff8a35532079061b903c3a25eed52
+- name: golang.org/x/sys
+  version: 99f16d856c9836c42d24e7ab64ea72916925fa97
+  subpackages:
+  - unix
 devImports: []

@@ -52,14 +52,7 @@ func (e *Engine) NewPlayer() int64 {
 	e.ObjectContainer.WriteObject(player)
 	log.Info("New player created, id ", player.ID)
 
-	scene := NewScene(player.ID, 250, 50)
-	e.seq++
-	scene.AddRect(NewRect(e.seq, 76, 30, 41, 38, false))
-	e.seq++
-	scene.AddRect(NewRect(e.seq, 60, 70, 68, 64, false))
-	e.seq++
-	scene.AddRect(NewRect(e.seq, 65, 134, 56, 36, false))
-
+	scene := NewScene(player.ID, 0, 0)
 	player.Scene = scene
 
 	e.broadcastScene(scene)
@@ -130,12 +123,11 @@ func (e *Engine) MainLoop() {
 
 		for _, object := range e.ObjectContainer.GetObjectsByType("Player") {
 			scene := object.Scene
-			scene.SetPosition(object.X, object.Y)
 			e.broadcastScene(scene)
 		}
 
 		// sleep for an interval
-		time.Sleep(30 * time.Millisecond)
+		time.Sleep(3 * time.Millisecond)
 	}
 }
 

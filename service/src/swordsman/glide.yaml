@@ -2,3 +2,4 @@ package: github.com/rachoac/swordsman
 import:
 - package: github.com/Sirupsen/logrus
 - package: github.com/gorilla/websocket
+- package: github.com/shopspring/decimal
