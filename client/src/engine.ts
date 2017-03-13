@@ -35,7 +35,10 @@ export default class Engine {
             this.client.send(`T:${this.sessionID}:${mouseX}:${mouseY}`)
         }
 
-        this.scene.setPosition(mouseX, mouseY)
+        // this.scene.setPosition(mouseX, mouseY)
+        let rotationMax = Math.PI * 2
+        let rotation = mouseX / this.processing.width * rotationMax
+        this.scene.getShape(2).rotate(rotation)
     }
 
     update() {
@@ -43,12 +46,12 @@ export default class Engine {
         this.processing.fill(255, 255, 255)
         this.processing.stroke(255, 255, 255)
         if (this.scene) {
-            this.scene.rotation += 0.01
-            this.rect2.rotation += 0.03
-            this.rect2.rotate(this.rect2.rotation)
-            this.scene.rotate(this.scene.rotation)
-            // this.scene.rotate(0)
-
+            // this.scene.rotation += 0.01
+            // this.rect2.rotation += 0.03
+            // this.rect2.rotate(this.rect2.rotation)
+            // this.scene.rotate(this.scene.rotation)
+            // // this.scene.rotate(0)
+            //
             this.scene.render()
         }
     }
@@ -110,10 +113,10 @@ export default class Engine {
 
         // create player scene
         this.scene = new Scene(this.processing, 300, 300)
-        let rect: Rect = new Rect(1, this.scene, 0, 0, 100, 100)
-        this.rect2 = new Rect(2, this.scene, 0, 50, 40, 35)
-
-        this.scene.addShape(rect).addShape(this.rect2)
+        this.scene
+            .addShape(new Rect(1, this.scene, 0, 0, 50, 70))
+            .addShape(new Rect(2, this.scene, 0, 71, 50, 100))
+        this.scene.rotate(0)
     }
 
     // private handleShape(data: string[]) {

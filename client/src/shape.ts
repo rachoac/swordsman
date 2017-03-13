@@ -90,12 +90,12 @@ class Shape {
         let anchor: Point = this.nodes[0]
 
         this.visitNodes( { visit: (point: Point) => {
-            let x: number = point.originalX - anchor.originalX
-            let y: number = point.originalY - anchor.originalY
+            let x: number = point.originalX - anchor.originalX + this.offsetX
+            let y: number = point.originalY - anchor.originalY + this.offsetY
             let rotated: Point = this.rotatePoint(x, y, this.rotation)
 
-            point.x = rotated.x + this.offsetX + this.translateX + containerOrigin.x + anchor.originalX
-            point.y = rotated.y + this.offsetY + this.translateY + containerOrigin.y + anchor.originalY
+            point.x = rotated.x + this.translateX + containerOrigin.x + anchor.originalX - this.offsetX
+            point.y = rotated.y + this.translateY + containerOrigin.y + anchor.originalY - this.offsetY
         }})
 
         this.visitNodes( { visit: (point: Point) => {
@@ -125,6 +125,8 @@ class Shape {
 class Rect extends Shape {
     constructor(id: number, parent: Scene, x: number, y: number, width: number, height: number) {
         super(id, parent, [new Point(x, y), new Point(x + width, y), new Point(x + width, y + height), new Point(x, y + height)])
+        // this.offsetX = -width/2
+        // this.offsetY = -height * 0.25
     }
 }
 

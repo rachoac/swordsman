@@ -32,6 +32,7 @@ export default class Scene {
 
     addShape(shape: Shape): Scene {
         this.shapes[shape.id] = shape
+        this.recompute()
         return this
     }
 
