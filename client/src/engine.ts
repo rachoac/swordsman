@@ -39,6 +39,7 @@ export default class Engine {
         let rotationMax = Math.PI * 2
         let rotation = mouseX / this.processing.width * rotationMax
         this.scene.getShape(2).rotate(rotation)
+        this.scene.getShape(3).rotate(rotation)
     }
 
     update() {
@@ -116,6 +117,7 @@ export default class Engine {
         this.scene
             .addShape(new Rect(1, this.scene, 0, 0, 50, 70))
             .addShape(new Rect(2, this.scene, 0, 71, 50, 100))
+            .addShape(new Rect(3, this.scene, 0, 171, 50, 50))
         this.scene.rotate(0)
     }
 

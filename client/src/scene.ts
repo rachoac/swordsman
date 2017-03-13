@@ -47,9 +47,22 @@ export default class Scene {
 
     recompute() {
         let keys: number[] = Object.keys(this.shapes).map(k => parseInt(k))
+
+        let containerOrigin: Point = this.getPosition()
         keys.forEach(k => {
             let shape: Shape = this.shapes[k]
-            shape.requireCompute()
+            shape.recompute()
+
+            // apply container
+            shape.visitNodes( { visit: (point: Point) => {
+                let x: number = point.x - containerOrigin.x
+                let y: number = point.y - containerOrigin.y
+                let rotated: Point = shape.rotatePoint(x, y, this.getRotation())
+
+                point.x = rotated.x + containerOrigin.x
+                point.y = rotated.y + containerOrigin.y
+            }})
+
         })
     }
 
