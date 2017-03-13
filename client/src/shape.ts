@@ -66,11 +66,18 @@ class Shape {
             this.recompute()
         }
 
+        processing.stroke(255, 0, 0)
+        processing.fill(255, 255, 255)
+        processing.beginShape();
         for ( var i: number = 0; i < this.nodes.length; i++) {
             var from: Point = this.nodes[i];
-            var to: Point = this.nodes[i >= this.nodes.length - 1 ? 0 : i + 1];
-            processing.line(from.x, from.y, to.x, to.y);
+            // var to: Point = this.nodes[i >= this.nodes.length - 1 ? 0 : i + 1];
+            // processing.line(from.x, from.y, to.x, to.y);
+            processing.vertex(from.x, from.y);
         }
+        let first: Point = this.nodes[0]
+        processing.vertex(first.x, first.y);
+        processing.endShape();
     }
 
     requireCompute() {
@@ -120,8 +127,8 @@ class Shape {
 class Rect extends Shape {
     constructor(id: number, parent: Scene, x: number, y: number, width: number, height: number) {
         super(id, parent, [new Point(x, y), new Point(x + width, y), new Point(x + width, y + height), new Point(x, y + height)])
-        // this.offsetX = -width/2
-        // this.offsetY = -height * 0.25
+        this.offsetX = -width/2
+        this.offsetY = -height * 0.25
     }
 }
 

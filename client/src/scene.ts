@@ -9,6 +9,7 @@ export default class Scene {
     parent: Scene | null
     rotation: number
     position: Point
+    pin: Point
 
     constructor(id: number, processing: any, parent: Scene | null, x: number, y: number) {
         this.id = id
@@ -18,6 +19,7 @@ export default class Scene {
         this.scenes = {}
         this.rotation = 0
         this.position = new Point(x, y)
+        this.pin = new Point(0, 0)
     }
 
     getPosition(): Point {
@@ -70,12 +72,18 @@ export default class Scene {
             shape.nodes.forEach( (point: Point) => {
                 let x: number = point.x
                 let y: number = point.y
+                    x -= this.pin.x
+                    y -= this.pin.y
                 let rotated = new Point(0, 0)
                 if (this.parent) {
                     rotated = shape.rotatePoint(x, y, this.parent.getRotation())
                 }
                 point.x = rotated.x + parentContainerOrigin.x
                 point.y = rotated.y + parentContainerOrigin.y
+
+                    point.x += this.pin.x
+                    point.y += this.pin.y
+
             })
 
             this.parent.applyParent(shape)
@@ -95,12 +103,12 @@ export default class Scene {
 
                 // apply this scene
                 shape.visitNodes( { visit: (point: Point) => {
-                    let x: number = point.x
-                    let y: number = point.y
+                    let x: number = point.x - this.pin.x
+                    let y: number = point.y - this.pin.y
                     let rotated: Point = shape.rotatePoint(x, y, this.getRotation())
 
-                    point.x = rotated.x + containerOrigin.x
-                    point.y = rotated.y + containerOrigin.y
+                    point.x = rotated.x + containerOrigin.x + this.pin.x
+                    point.y = rotated.y + containerOrigin.y + this.pin.y
                 }})
 
                 // recursively apply container parent
@@ -119,20 +127,20 @@ export default class Scene {
     }
 
     render() {
-        // scenes
-        {
-            let keys: number[] = Object.keys(this.scenes).map(k => parseInt(k))
-            keys.forEach(k => {
-                let scene: Scene = this.scenes[k]
-                scene.render()
-            })
-        }
         // shapes
         {
             let keys: number[] = Object.keys(this.shapes).map(k => parseInt(k))
             keys.forEach(k => {
                 let shape: Shape = this.shapes[k]
                 shape.render(this.processing)
+            })
+        }
+        // scenes
+        {
+            let keys: number[] = Object.keys(this.scenes).map(k => parseInt(k))
+            keys.forEach(k => {
+                let scene: Scene = this.scenes[k]
+                scene.render()
             })
         }
     }
