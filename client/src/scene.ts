@@ -5,11 +5,14 @@ export default class Scene {
     id: number
     shapes: NumberKeyedMap<Shape>
     scenes: NumberKeyedMap<Scene>
+    sceneOrdering: Scene[]
     processing: any
     parent: Scene | null
     rotation: number
     position: Point
     pin: Point
+    translateX: number
+    translateY: number
 
     constructor(id: number, processing: any, parent: Scene | null, x: number, y: number) {
         this.id = id
@@ -17,9 +20,12 @@ export default class Scene {
         this.parent = parent
         this.shapes = {}
         this.scenes = {}
+        this.sceneOrdering = []
         this.rotation = 0
         this.position = new Point(x, y)
         this.pin = new Point(0, 0)
+        this.translateX = 0
+        this.translateY = 0
     }
 
     getPosition(): Point {
@@ -49,6 +55,7 @@ export default class Scene {
 
     addScene(scene: Scene): Scene {
         this.scenes[scene.id] = scene
+        this.sceneOrdering.push(scene)
         this.recompute()
         return this
     }
@@ -66,24 +73,23 @@ export default class Scene {
         this.recompute()
     }
 
+    translate(x: number, y: number) {
+        this.translateX = x
+        this.translateY = y
+    }
+
     applyParent(shape: Shape) {
         if (this.parent) {
             let parentContainerOrigin: Point = this.parent.getPosition()
             shape.nodes.forEach( (point: Point) => {
-                let x: number = point.x
-                let y: number = point.y
-                    x -= this.pin.x
-                    y -= this.pin.y
+                let x: number = point.x - this.pin.x + (this.parent ? this.parent.translateX : 0)
+                let y: number = point.y - this.pin.y + (this.parent ? this.parent.translateY : 0)
                 let rotated = new Point(0, 0)
                 if (this.parent) {
                     rotated = shape.rotatePoint(x, y, this.parent.getRotation())
                 }
-                point.x = rotated.x + parentContainerOrigin.x
-                point.y = rotated.y + parentContainerOrigin.y
-
-                    point.x += this.pin.x
-                    point.y += this.pin.y
-
+                point.x = rotated.x + parentContainerOrigin.x + this.pin.x
+                point.y = rotated.y + parentContainerOrigin.y + this.pin.y
             })
 
             this.parent.applyParent(shape)
@@ -103,12 +109,12 @@ export default class Scene {
 
                 // apply this scene
                 shape.visitNodes( { visit: (point: Point) => {
-                    let x: number = point.x - this.pin.x
-                    let y: number = point.y - this.pin.y
+                    let x: number = point.x - this.pin.x + this.translateX
+                    let y: number = point.y - this.pin.y + this.translateY
                     let rotated: Point = shape.rotatePoint(x, y, this.getRotation())
 
                     point.x = rotated.x + containerOrigin.x + this.pin.x
-                    point.y = rotated.y + containerOrigin.y + this.pin.y
+                    point.y = rotated.y + containerOrigin.y  + this.pin.y
                 }})
 
                 // recursively apply container parent
@@ -127,6 +133,10 @@ export default class Scene {
     }
 
     render() {
+        // scenes
+        {
+            this.sceneOrdering.forEach( (scene: Scene) => scene.render())
+        }
         // shapes
         {
             let keys: number[] = Object.keys(this.shapes).map(k => parseInt(k))
@@ -135,13 +145,6 @@ export default class Scene {
                 shape.render(this.processing)
             })
         }
-        // scenes
-        {
-            let keys: number[] = Object.keys(this.scenes).map(k => parseInt(k))
-            keys.forEach(k => {
-                let scene: Scene = this.scenes[k]
-                scene.render()
-            })
-        }
+
     }
 }

@@ -40,17 +40,27 @@ export default class Engine {
 
         // shoulder rotation
         var shoulderRotation = Math.max((Math.PI * 0.8), Math.min( (Math.PI * 2.3), angle1 + (Math.PI * 1.5)))
-        console.log(shoulderRotation)
-        this.scene.rotate(shoulderRotation)
+        this.scene.getScene(2).rotate(shoulderRotation)
 
         // distance from shoulder
         let distance = Math.max(0, mouseX - this.processing.width/2)
         let maxDistance = this.processing.width/2
+
+        // shoulder stretch
+        var shoulderStretch = distance/maxDistance * 30
+        this.scene.getScene(2).translate(-shoulderStretch, shoulderStretch)
+
+        // elbow rotation
         let pctDistance = distance/maxDistance * 2
         let maxRotation = (Math.PI * 0.8)
-
         let elbowRotation = Math.min(0, -(1.0 - pctDistance) * maxRotation)
         this.scene.getScene(2).getScene(3).rotate(elbowRotation)
+
+        // torso rotation
+        let maxTorsoRotation = (Math.PI * 0.05)
+        let torsoRotation = Math.min(maxTorsoRotation, distance/maxDistance * Math.PI)
+        console.log(torsoRotation)
+        this.scene.getScene(10).rotate(torsoRotation)
     }
 
     update() {
@@ -121,21 +131,30 @@ export default class Engine {
         this.scene = new Scene(1, this.processing, null,
             this.processing.width/2, this.processing.height/2)
 
-        let subScene: Scene = new Scene(2, this.processing, this.scene, 0, 0)
-        subScene.pin = new Point(25, 0)
-        this.scene.addScene(subScene)
+        let bodyScene: Scene = new Scene(10, this.processing, this.scene,
+            -10, -10)
+        bodyScene
+            .addShape(new Rect(1, bodyScene, 0, 0, 80, 100))
+            .addShape(new Rect(2, bodyScene, 5, 101, 70, 50))
+            .addShape(new Rect(3, bodyScene, 20, -52, 50, 50))
+        this.scene.addScene(bodyScene)
 
-        subScene
+        let armScene: Scene = new Scene(2, this.processing, this.scene, 0, 0)
+        armScene.pin = new Point(25, 0)
+        this.scene.addScene(armScene)
+
+        armScene
             .addShape(new Rect(1, this.scene, 0, 0, 50, 70))
 
-        let subSubScene: Scene = new Scene(3, this.processing, subScene, 0, 71)
-        subScene.addScene(subSubScene)
+        let subSubScene: Scene = new Scene(3, this.processing, armScene, 0, 71)
+        armScene.addScene(subSubScene)
         subSubScene.pin = new Point(25, 0)
 
-        subSubScene.addShape(new Rect(2, subScene, 0, 0, 50, 100))
-                   .addShape(new Rect(3, subScene, 0, 101, 50, 50))
-                   .addShape(new Rect(4, subScene, 22, 151, 5, 250))
-        this.scene.rotate(25)
+        subSubScene.addShape(new Rect(2, armScene, 3, 0, 40, 100))
+                   .addShape(new Rect(3, armScene, 4, 101, 35, 30))
+                   .addShape(new Rect(4, armScene, 22, 131, 5, 250))
+
+
     }
 
     // private handleShape(data: string[]) {
