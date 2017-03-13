@@ -12,7 +12,6 @@ export default class Engine {
     connected: boolean
     processing: any
     scene: Scene
-    rect2: Rect
 
     constructor(processing: any, playerName: string) {
         this.playerName = playerName
@@ -38,8 +37,11 @@ export default class Engine {
         // this.scene.setPosition(mouseX, mouseY)
         let rotationMax = Math.PI * 2
         let rotation = mouseX / this.processing.width * rotationMax
-        this.scene.getShape(2).rotate(rotation)
-        this.scene.getShape(3).rotate(rotation)
+        // this.scene.getScene(2).getScene(3).getShape(2).rotate(rotation)
+        // this.scene.getScene(2).getScene(3).getShape(3).rotate(rotation)
+        this.scene.getScene(2).getScene(3).rotate(rotation)
+        this.scene.rotate(rotation/4)
+        this.scene.recompute()
     }
 
     update() {
@@ -47,12 +49,6 @@ export default class Engine {
         this.processing.fill(255, 255, 255)
         this.processing.stroke(255, 255, 255)
         if (this.scene) {
-            // this.scene.rotation += 0.01
-            // this.rect2.rotation += 0.03
-            // this.rect2.rotate(this.rect2.rotation)
-            // this.scene.rotate(this.scene.rotation)
-            // // this.scene.rotate(0)
-            //
             this.scene.render()
         }
     }
@@ -113,12 +109,19 @@ export default class Engine {
         this.client.send(`I:${this.sessionID}:${this.playerName}`)
 
         // create player scene
-        this.scene = new Scene(this.processing, 300, 300)
-        this.scene
+        this.scene = new Scene(1, this.processing, null, 300, 300)
+        let subScene: Scene = new Scene(2, this.processing, this.scene, 0, 0)
+        this.scene.addScene(subScene)
+        subScene
             .addShape(new Rect(1, this.scene, 0, 0, 50, 70))
-            .addShape(new Rect(2, this.scene, 0, 71, 50, 100))
-            .addShape(new Rect(3, this.scene, 0, 171, 50, 50))
-        this.scene.rotate(0)
+
+        let subSubScene: Scene = new Scene(3, this.processing, subScene, 0, 71)
+        subScene.addScene(subSubScene)
+
+        subSubScene.addShape(new Rect(2, subScene, 0, 0, 50, 100))
+                   .addShape(new Rect(3, subScene, 0, 101, 50, 50))
+        this.scene.rotate(25)
+        this.scene.recompute()
     }
 
     // private handleShape(data: string[]) {

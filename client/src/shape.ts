@@ -11,6 +11,10 @@ class Point {
         this.originalX = x
         this.originalY = y
     }
+
+    add(other: Point): Point {
+        return new Point(other.x + this.x, other.y + this.y)
+    }
 }
 
 interface ShapeVisitor {
@@ -86,7 +90,6 @@ class Shape {
             return
         }
 
-        let containerOrigin: Point = this.parent.getPosition()
         let anchor: Point = this.nodes[0]
 
         // apply self
@@ -95,8 +98,8 @@ class Shape {
             let y: number = point.originalY - anchor.originalY + this.offsetY
             let rotated: Point = this.rotatePoint(x, y, this.rotation)
 
-            point.x = rotated.x + this.translateX + containerOrigin.x + anchor.originalX - this.offsetX
-            point.y = rotated.y + this.translateY + containerOrigin.y + anchor.originalY - this.offsetY
+            point.x = rotated.x + this.translateX + anchor.originalX - this.offsetX
+            point.y = rotated.y + this.translateY + anchor.originalY - this.offsetY
         }})
 
         this.needsCompute = false
