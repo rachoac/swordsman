@@ -14,10 +14,9 @@ export default class Scene {
     translateX: number
     translateY: number
 
-    constructor(id: number, processing: any, parent: Scene | null, x: number, y: number) {
+    constructor(id: number, processing: any, x: number, y: number) {
         this.id = id
         this.processing = processing
-        this.parent = parent
         this.shapes = {}
         this.scenes = {}
         this.sceneOrdering = []
@@ -49,11 +48,13 @@ export default class Scene {
 
     addShape(shape: Shape): Scene {
         this.shapes[shape.id] = shape
+        shape.parent = this
         this.recompute()
         return this
     }
 
     addScene(scene: Scene): Scene {
+        scene.parent = this
         this.scenes[scene.id] = scene
         this.sceneOrdering.push(scene)
         this.recompute()
@@ -68,14 +69,16 @@ export default class Scene {
         return this.scenes[id]
     }
 
-    rotate(rotation: number) {
+    rotate(rotation: number): Scene {
         this.rotation = rotation
         this.recompute()
+        return this
     }
 
-    translate(x: number, y: number) {
+    translate(x: number, y: number): Scene {
         this.translateX = x
         this.translateY = y
+        return this
     }
 
     applyParent(shape: Shape) {
@@ -133,10 +136,6 @@ export default class Scene {
     }
 
     render() {
-        // scenes
-        {
-            this.sceneOrdering.forEach( (scene: Scene) => scene.render())
-        }
         // shapes
         {
             let keys: number[] = Object.keys(this.shapes).map(k => parseInt(k))
@@ -146,5 +145,9 @@ export default class Scene {
             })
         }
 
+        // scenes
+        {
+            this.sceneOrdering.forEach( (scene: Scene) => scene.render())
+        }
     }
 }

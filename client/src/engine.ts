@@ -1,6 +1,6 @@
 import Scene from "./scene";
 import { Rect} from "./shape";
-import {Point} from "./shape";
+import {Point, Color} from "./shape";
 interface Client {
     send(value: string): void
 }
@@ -58,9 +58,19 @@ export default class Engine {
 
         // torso rotation
         let maxTorsoRotation = (Math.PI * 0.05)
-        let torsoRotation = Math.min(maxTorsoRotation, distance/maxDistance * Math.PI)
-        console.log(torsoRotation)
+        let torsoRotation = distance/maxDistance * maxTorsoRotation
+        // console.log(distance, maxDistance, torsoRotation, maxTorsoRotation)
         this.scene.getScene(10).rotate(torsoRotation)
+
+        // leg rotation right
+        this.scene.getScene(11)
+            .rotate(torsoRotation + -(distance/maxDistance * Math.PI * 0.15))
+            .translate(distance/maxDistance * -50, distance/maxDistance * -5)
+
+        // leg rotation left
+        this.scene.getScene(12)
+            .rotate(torsoRotation + (distance/maxDistance *Math.PI * 0.15))
+            .translate(distance/maxDistance * 60, distance/maxDistance * -25)
     }
 
     update() {
@@ -128,31 +138,45 @@ export default class Engine {
         this.client.send(`I:${this.sessionID}:${this.playerName}`)
 
         // create player scene
-        this.scene = new Scene(1, this.processing, null,
+        this.scene = new Scene(1, this.processing,
             this.processing.width/2, this.processing.height/2)
 
-        let bodyScene: Scene = new Scene(10, this.processing, this.scene,
-            -10, -10)
-        bodyScene
-            .addShape(new Rect(1, bodyScene, 0, 0, 80, 100))
-            .addShape(new Rect(2, bodyScene, 5, 101, 70, 50))
-            .addShape(new Rect(3, bodyScene, 20, -52, 50, 50))
+        let legScene2: Scene = new Scene(12, this.processing, 0, 0)
+        legScene2
+            .addShape(new Rect(1, 8, 135, 60, 80).rotate(-Math.PI * 0.04))
+            .addShape(new Rect(2, 18, 210, 50, 120).rotate(Math.PI * 0.04))
+        this.scene.addScene(legScene2)
+
+        let bodyScene: Scene = new Scene(10, this.processing, -10, -10)
         this.scene.addScene(bodyScene)
 
-        let armScene: Scene = new Scene(2, this.processing, this.scene, 0, 0)
+        let legScene: Scene = new Scene(11, this.processing, 0, 0)
+        legScene
+            .addShape(new Rect(1, 10, 140, 60, 80).rotate(-Math.PI * 0.05))
+            .addShape(new Rect(2, 20, 215, 50, 120).rotate(Math.PI * 0.05))
+
+        this.scene.addScene(legScene)
+
+        bodyScene
+            .addShape(new Rect(1, 0, 0, 80, 100))
+            .addShape(new Rect(2, 5, 101, 70, 50))
+            .addShape(new Rect(3, 20, -52, 50, 50))
+
+        let armScene: Scene = new Scene(2, this.processing, 0, 0)
         armScene.pin = new Point(25, 0)
         this.scene.addScene(armScene)
-
         armScene
-            .addShape(new Rect(1, this.scene, 0, 0, 50, 70))
+            .addShape(new Rect(1, 0, 0, 50, 70))
 
-        let subSubScene: Scene = new Scene(3, this.processing, armScene, 0, 71)
-        armScene.addScene(subSubScene)
-        subSubScene.pin = new Point(25, 0)
+        let foreArm: Scene = new Scene(3, this.processing, 0, 71)
+        armScene.addScene(foreArm)
+        foreArm.pin = new Point(25, 0)
 
-        subSubScene.addShape(new Rect(2, armScene, 3, 0, 40, 100))
-                   .addShape(new Rect(3, armScene, 4, 101, 35, 30))
-                   .addShape(new Rect(4, armScene, 22, 131, 5, 250))
+        let sword: Rect = new Rect(4, 22, 131, 5, 250);
+        sword.setColor(new Color(255, 0, 0, 255))
+        foreArm.addShape(new Rect(2, 3, 0, 40, 100))
+                   .addShape(new Rect(3, 4, 101, 35, 30))
+                   .addShape(sword)
 
 
     }

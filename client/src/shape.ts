@@ -1,4 +1,19 @@
 import Scene from "./scene";
+
+class Color {
+    r: number
+    g: number
+    b: number
+    a: number
+
+    constructor(r: number, g: number, b: number, a: number) {
+        this.r = r
+        this.g = g
+        this.b = b
+        this.a = a
+    }
+}
+
 class Point {
     originalX: number
     originalY: number
@@ -35,17 +50,21 @@ class Shape {
     offsetY: number
     parent: Scene
     needsCompute: boolean
+    color: Color
 
-    constructor(id: number, parent: Scene, nodes?: Point[]) {
+    constructor(id: number, nodes?: Point[]) {
         this.id = id
         this.nodes = nodes || []
         this.offsetX = 0
         this.offsetY = 0
         this.translateX = 0
         this.translateY = 0
-        this.parent = parent
         this.rotation = 0
         this.needsCompute = true
+    }
+
+    setColor(color: Color) {
+        this.color = color
     }
 
     addNode(...nodes: Point[]) {
@@ -66,8 +85,12 @@ class Shape {
             this.recompute()
         }
 
-        processing.stroke(255, 0, 0)
-        processing.fill(255, 255, 255)
+        processing.stroke(0, 0, 0)
+        if (this.color) {
+            processing.fill(this.color.r, this.color.g, this.color.b)
+        } else {
+            processing.fill(255, 255, 255)
+        }
         processing.beginShape();
         for ( var i: number = 0; i < this.nodes.length; i++) {
             var from: Point = this.nodes[i];
@@ -118,15 +141,16 @@ class Shape {
         this.requireCompute()
     }
 
-    rotate(rotation: number) {
+    rotate(rotation: number): Shape {
         this.rotation = rotation
         this.requireCompute()
+        return this
     }
 }
 
 class Rect extends Shape {
-    constructor(id: number, parent: Scene, x: number, y: number, width: number, height: number) {
-        super(id, parent, [new Point(x, y), new Point(x + width, y), new Point(x + width, y + height), new Point(x, y + height)])
+    constructor(id: number, x: number, y: number, width: number, height: number) {
+        super(id, [new Point(x, y), new Point(x + width, y), new Point(x + width, y + height), new Point(x, y + height)])
         this.offsetX = -width/2
         this.offsetY = -height * 0.25
     }
@@ -138,4 +162,5 @@ export {
     ShapeVisitor,
     Shape,
     Rect,
+    Color,
 }
