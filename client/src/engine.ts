@@ -12,7 +12,8 @@ export default class Engine {
     connected: boolean
     processing: any
     scene: Scene
-
+    playerX: number
+    
     constructor(processing: any, playerName: string) {
         this.playerName = playerName
         this.processing = processing
@@ -24,7 +25,13 @@ export default class Engine {
     }
 
     keyHandling() {
-        // let keyCode = this.processing.keyCode
+        let keyCode = this.processing.keyCode
+        if (keyCode === 65) {
+            this.playerX -= 20
+        }
+        if (keyCode === 68) {
+            this.playerX += 20
+        }
     }
 
     mouseMovedHandling() {
@@ -34,20 +41,23 @@ export default class Engine {
             this.client.send(`T:${this.sessionID}:${mouseX}:${mouseY}`)
         }
 
-        let dx: number =  mouseX - this.processing.width/2
+        let dx: number =  mouseX - this.playerX
         let dy: number = mouseY - this.processing.height/2
         let angle1: number = this.processing.atan2(dy, dx)
 
-        // shoulder rotation
+        // shoulder rotation - right
         var shoulderRotation = Math.max((Math.PI * 0.8), Math.min( (Math.PI * 2.3), angle1 + (Math.PI * 1.5)))
         this.scene.getScene(2).rotate(shoulderRotation)
 
         // distance from shoulder
-        let distance = Math.max(0, mouseX - this.processing.width/2)
-        let maxDistance = this.processing.width/2
+        let distance = Math.max(0, mouseX - this.playerX)
+        let maxDistance = 600
+
+        // shoulder rotation - left
+        this.scene.getScene(4).rotate(Math.min(Math.PI * 0.15, distance/maxDistance * Math.PI * 0.15))
 
         // shoulder stretch
-        var shoulderStretch = distance/maxDistance * 30
+        var shoulderStretch = Math.min( 30, distance/maxDistance * 30 )
         this.scene.getScene(2).translate(-shoulderStretch, shoulderStretch)
 
         // elbow rotation
@@ -58,19 +68,20 @@ export default class Engine {
 
         // torso rotation
         let maxTorsoRotation = (Math.PI * 0.05)
-        let torsoRotation = distance/maxDistance * maxTorsoRotation
+        let torsoRotation = Math.min(maxTorsoRotation, distance/maxDistance * maxTorsoRotation)
         // console.log(distance, maxDistance, torsoRotation, maxTorsoRotation)
         this.scene.getScene(10).rotate(torsoRotation)
 
         // leg rotation right
+        let maxLegRotation = Math.PI * 0.15
         this.scene.getScene(11)
-            .rotate(torsoRotation + -(distance/maxDistance * Math.PI * 0.15))
-            .translate(distance/maxDistance * -50, distance/maxDistance * -5)
+            .rotate(torsoRotation + -Math.min(maxLegRotation, distance/maxDistance * maxLegRotation))
+            .translate(Math.max(-50, distance/maxDistance * -50), Math.max(-5, distance/maxDistance * -5))
 
         // leg rotation left
         this.scene.getScene(12)
-            .rotate(torsoRotation + (distance/maxDistance *Math.PI * 0.15))
-            .translate(distance/maxDistance * 60, distance/maxDistance * -25)
+            .rotate(torsoRotation + Math.min(maxLegRotation, distance/maxDistance * maxLegRotation))
+            .translate(Math.min(60, distance/maxDistance * 60), Math.max(-25, distance/maxDistance * -25))
     }
 
     update() {
@@ -78,6 +89,7 @@ export default class Engine {
         this.processing.fill(255, 255, 255)
         this.processing.stroke(255, 255, 255)
         if (this.scene) {
+            this.scene.setPosition(this.playerX, this.scene.position.y)
             this.scene.render()
         }
     }
@@ -137,15 +149,29 @@ export default class Engine {
         this.sessionID = parseInt(data[0])
         this.client.send(`I:${this.sessionID}:${this.playerName}`)
 
+        this.playerX = this.processing.width/2
+        
         // create player scene
         this.scene = new Scene(1, this.processing,
-            this.processing.width/2, this.processing.height/2)
+            this.playerX, this.processing.height/2)
 
         let legScene2: Scene = new Scene(12, this.processing, 0, 0)
         legScene2
             .addShape(new Rect(1, 8, 135, 60, 80).rotate(-Math.PI * 0.04))
             .addShape(new Rect(2, 18, 210, 50, 120).rotate(Math.PI * 0.04))
         this.scene.addScene(legScene2)
+
+        let armScene2: Scene = new Scene(4, this.processing, 0, 0)
+        armScene2.pin = new Point(25, 0)
+        this.scene.addScene(armScene2)
+        armScene2
+            .addShape(new Rect(1, 0, 0, 50, 70))
+        {
+            let foreArm: Scene = new Scene(1, this.processing, 0, 71)
+            armScene2.addScene(foreArm)
+            foreArm.pin = new Point(25, 0)
+            foreArm.rotate(-Math.PI * 0.3)
+        }
 
         let bodyScene: Scene = new Scene(10, this.processing, -10, -10)
         this.scene.addScene(bodyScene)
@@ -168,16 +194,18 @@ export default class Engine {
         armScene
             .addShape(new Rect(1, 0, 0, 50, 70))
 
-        let foreArm: Scene = new Scene(3, this.processing, 0, 71)
-        armScene.addScene(foreArm)
-        foreArm.pin = new Point(25, 0)
+        {
+            let foreArm: Scene = new Scene(3, this.processing, 0, 71)
+            armScene.addScene(foreArm)
+            foreArm.pin = new Point(25, 0)
+            foreArm.rotate(-Math.PI * 0.15)
 
-        let sword: Rect = new Rect(4, 22, 131, 5, 250);
-        sword.setColor(new Color(255, 0, 0, 255))
-        foreArm.addShape(new Rect(2, 3, 0, 40, 100))
-                   .addShape(new Rect(3, 4, 101, 35, 30))
-                   .addShape(sword)
-
+            let sword: Rect = new Rect(4, 22, 131, 5, 210);
+            sword.setColor(new Color(255, 0, 0, 255))
+            foreArm.addShape(new Rect(2, 3, 0, 40, 100))
+                .addShape(new Rect(3, 4, 101, 35, 30))
+                .addShape(sword)
+        }
 
     }
 
