@@ -14,27 +14,106 @@ export default class Engine {
     sceneLeft: Scene
     sceneRight: Scene
     playerX: number
+    walking: boolean
+    walkDir: string
+    walkCtr: number
+    walkSign: number
 
     constructor(processing: any, playerName: string) {
         this.playerName = playerName
         this.processing = processing
         this.mouseMovedHandling = this.mouseMovedHandling.bind(this)
         this.keyHandling = this.keyHandling.bind(this)
+        this.keyReleased = this.keyReleased.bind(this)
     }
 
     restart() {
     }
 
+    keyReleased() {
+        this.walking = false
+        this.walkDir = ""
+        this.walkCtr = 0
+        this.walkSign = 5
+    }
+
     keyHandling() {
         let keyCode = this.processing.keyCode
         if (keyCode === 65) {
-            this.playerX -= 20
+            this.walking = true
+            this.walkDir = "left"
+
         }
         if (keyCode === 68) {
-            this.playerX += 20
+            this.walking = true
+            this.walkDir = "right"
         }
     }
 
+    handleWalking() {
+        if (this.walkDir === "") {
+            // not walking
+            return
+        }
+        if ( this.walkDir === "left") {
+            this.playerX -= 8
+        } else {
+            this.playerX += 8
+        }
+
+
+        this.walkCtr += this.walkSign
+        if (this.walkCtr > 100 || this.walkCtr < 0) {
+            this.walkSign *= -1
+        }
+
+        if (this.processing.mouseX > this.playerX) {
+            // right
+
+            // distance from shoulder
+            let distance = Math.max(0, this.processing.mouseX - this.playerX)
+            let maxDistance = 600
+            let maxTorsoRotation = (Math.PI * 0.05)
+            let torsoRotation = Math.min(maxTorsoRotation, distance / maxDistance * maxTorsoRotation)
+
+            let walkPct = this.walkCtr / 100
+            let pct = (walkPct <= 0.5 ? (0.5 - walkPct)/0.5 : (walkPct - 0.5)/0.5)
+
+            this.sceneRight.getScene(11)
+                .rotate(torsoRotation + -pct * Math.PI * 0.15 * (walkPct < 0.5 ? -1 : 1))
+                .translate(
+                    pct * (walkPct < 0.5 ? 60 : -50),
+                    pct * (walkPct < 0.5 ? -25 : -5)
+                )
+
+            this.sceneRight.getScene(12)
+                .rotate(torsoRotation + pct * Math.PI * 0.15 * (walkPct < 0.5 ? -1 : 1))
+                .translate(
+                    pct * (walkPct < 0.5 ? -50 : 60),
+                    pct * (walkPct < 0.5 ? -5 : -25)
+                )
+        } else {
+            // left
+
+            // distance from shoulder
+            let walkPct = this.walkCtr / 100
+            let pct = (walkPct <= 0.5 ? (0.5 - walkPct)/0.5 : (walkPct - 0.5)/0.5)
+
+            this.sceneLeft.getScene(11)
+                .rotate(-pct * Math.PI * 0.15 * (walkPct < 0.5 ? -1 : 1))
+                .translate(
+                    pct * (walkPct < 0.5 ? 45 : -45),
+                    pct * (walkPct < 0.5 ? -35 : 5)
+                )
+
+            this.sceneLeft.getScene(12)
+                .rotate(pct * Math.PI * 0.15 * (walkPct < 0.5 ? -1 : 1))
+                .translate(
+                    pct * (walkPct < 0.5 ? -45 : 45),
+                    pct * (walkPct < 0.5 ? 5 : -35)
+                )
+        }
+    }
     mouseSceneLeft(mouseX: number, mouseY: number) {
         let dx: number = mouseX - this.playerX
         let dy: number = mouseY - this.processing.height / 2
@@ -143,6 +222,10 @@ export default class Engine {
         this.processing.fill(255, 255, 255)
         this.processing.stroke(255, 255, 255)
 
+        if (this.walking) {
+            this.handleWalking()
+        }
+
         if (this.processing.mouseX > this.playerX) {
             if (this.sceneRight) {
                 this.sceneRight.setPosition(this.playerX, this.sceneRight.position.y)
@@ -203,6 +286,7 @@ export default class Engine {
         let engine = new Engine(processing, playerName);
 
         processing.keyPressed = engine.keyHandling
+        processing.keyReleased = engine.keyReleased
         processing.mouseMoved = engine.mouseMovedHandling
 
         engine.restart()
@@ -337,6 +421,9 @@ export default class Engine {
         // create player scene
         this.sceneLeft = this.createSceneLeft()
         this.sceneRight = this.createSceneRight()
+
+        this.walkCtr = 0
+        this.walkSign = 5
     }
 
 }
