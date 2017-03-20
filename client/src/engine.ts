@@ -1,4 +1,4 @@
-import Fighter from "./fighter";
+import Player from "./player";
 
 interface Client {
     send(value: string): void
@@ -10,7 +10,7 @@ export default class Engine {
     playerName: string
     connected: boolean
     processing: any
-    player: Fighter
+    player: Player
 
     constructor(processing: any, playerName: string) {
         this.playerName = playerName
@@ -74,7 +74,7 @@ export default class Engine {
         }
 
         this.player.update()
-        this.player.render(this.processing.mouseX)
+        this.player.render()
     }
 
     onSocketClose(evt: any) {
@@ -136,7 +136,7 @@ export default class Engine {
         this.sessionID = parseInt(data[0])
         this.client.send(`I:${this.sessionID}:${this.playerName}`)
 
-        this.player = new Fighter(this.processing, this.sessionID, this.playerName, this.processing.width / 2)
+        this.player = new Player(this.processing, this.sessionID, this.playerName, this.processing.width / 2)
     }
 
 }
