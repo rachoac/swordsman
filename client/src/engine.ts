@@ -1,5 +1,5 @@
 import Scene from "./scene";
-import { Rect} from "./shape";
+import {Rect} from "./shape";
 import {Point, Color} from "./shape";
 interface Client {
     send(value: string): void
@@ -14,7 +14,7 @@ export default class Engine {
     sceneLeft: Scene
     sceneRight: Scene
     playerX: number
-    
+
     constructor(processing: any, playerName: string) {
         this.playerName = playerName
         this.processing = processing
@@ -36,8 +36,8 @@ export default class Engine {
     }
 
     mouseSceneLeft(mouseX: number, mouseY: number) {
-        let dx: number =  mouseX - this.playerX
-        let dy: number = mouseY - this.processing.height/2
+        let dx: number = mouseX - this.playerX
+        let dy: number = mouseY - this.processing.height / 2
         let angle1: number = this.processing.atan2(dy, dx)
 
         // shoulder rotation - right
@@ -49,43 +49,43 @@ export default class Engine {
         let maxDistance = 600
 
         // shoulder rotation - left
-        this.sceneLeft.getScene(4).rotate(-Math.min(Math.PI * 0.15, distance/maxDistance * Math.PI * 0.15))
+        this.sceneLeft.getScene(4).rotate(-Math.min(Math.PI * 0.15, distance / maxDistance * Math.PI * 0.15))
 
         // shoulder stretch
-        var shoulderStretch = Math.min( 30, distance/maxDistance * 30 )
+        var shoulderStretch = Math.min(30, distance / maxDistance * 30)
         this.sceneLeft.getScene(2).translate(0, shoulderStretch)
 
         // elbow rotation
-        let pctDistance = distance/maxDistance * 2
+        let pctDistance = distance / maxDistance * 2
         let maxRotation = -(Math.PI * 0.8)
         let elbowRotation = Math.max(0, -(1.0 - pctDistance) * maxRotation)
         this.sceneLeft.getScene(2).getScene(3).rotate(elbowRotation)
 
         // torso rotation
         let maxTorsoRotation = (Math.PI * 0.05)
-        let torsoRotation = Math.min(maxTorsoRotation, distance/maxDistance * maxTorsoRotation)
+        let torsoRotation = Math.min(maxTorsoRotation, distance / maxDistance * maxTorsoRotation)
         // console.log(distance, maxDistance, torsoRotation, maxTorsoRotation)
         this.sceneLeft.getScene(10).rotate(-torsoRotation)
 
         // // leg rotation right
         let maxLegRotation = Math.PI * 0.15
         this.sceneLeft.getScene(11)
-            .rotate(distance/maxDistance * maxLegRotation)
-            .translate(distance/maxDistance * 55, distance/maxDistance * -55)
+            .rotate(distance / maxDistance * maxLegRotation)
+            .translate(distance / maxDistance * 45, distance / maxDistance * -45)
 
         // leg rotation left
         this.sceneLeft.getScene(12)
-            .rotate(distance/maxDistance * -maxLegRotation)
-            .translate(distance/maxDistance * -35, distance/maxDistance * 5)
+            .rotate(distance / maxDistance * -maxLegRotation)
+            .translate(distance / maxDistance * -35, distance / maxDistance * 5)
     }
 
     mouseSceneRight(mouseX: number, mouseY: number) {
-        let dx: number =  mouseX - this.playerX
-        let dy: number = mouseY - this.processing.height/2
+        let dx: number = mouseX - this.playerX
+        let dy: number = mouseY - this.processing.height / 2
         let angle1: number = this.processing.atan2(dy, dx)
 
         // shoulder rotation - right
-        var shoulderRotation = Math.max((Math.PI * 0.8), Math.min( (Math.PI * 2.3), angle1 + (Math.PI * 1.5)))
+        var shoulderRotation = Math.max((Math.PI * 0.8), Math.min((Math.PI * 2.3), angle1 + (Math.PI * 1.5)))
         this.sceneRight.getScene(2).rotate(shoulderRotation)
 
         // distance from shoulder
@@ -93,36 +93,36 @@ export default class Engine {
         let maxDistance = 600
 
         // shoulder rotation - left
-        this.sceneRight.getScene(4).rotate(Math.min(Math.PI * 0.15, distance/maxDistance * Math.PI * 0.15))
+        this.sceneRight.getScene(4).rotate(Math.min(Math.PI * 0.15, distance / maxDistance * Math.PI * 0.15))
 
         // shoulder stretch
-        var shoulderStretch = Math.min( 30, distance/maxDistance * 30 )
+        var shoulderStretch = Math.min(30, distance / maxDistance * 30)
         this.sceneRight.getScene(2).translate(-shoulderStretch, shoulderStretch)
 
         // elbow rotation
-        let pctDistance = distance/maxDistance * 2
+        let pctDistance = distance / maxDistance * 2
         let maxRotation = (Math.PI * 0.8)
         let elbowRotation = Math.min(0, -(1.0 - pctDistance) * maxRotation)
         this.sceneRight.getScene(2).getScene(3).rotate(elbowRotation)
 
         // torso rotation
         let maxTorsoRotation = (Math.PI * 0.05)
-        let torsoRotation = Math.min(maxTorsoRotation, distance/maxDistance * maxTorsoRotation)
+        let torsoRotation = Math.min(maxTorsoRotation, distance / maxDistance * maxTorsoRotation)
         // console.log(distance, maxDistance, torsoRotation, maxTorsoRotation)
         this.sceneRight.getScene(10).rotate(torsoRotation)
 
         // leg rotation right
         let maxLegRotation = Math.PI * 0.15
         this.sceneRight.getScene(11)
-            .rotate(torsoRotation + -Math.min(maxLegRotation, distance/maxDistance * maxLegRotation))
-            .translate(Math.max(-50, distance/maxDistance * -50), Math.max(-5, distance/maxDistance * -5))
+            .rotate(torsoRotation + -Math.min(maxLegRotation, distance / maxDistance * maxLegRotation))
+            .translate(Math.max(-50, distance / maxDistance * -50), Math.max(-5, distance / maxDistance * -5))
 
         // leg rotation left
         this.sceneRight.getScene(12)
-            .rotate(torsoRotation + Math.min(maxLegRotation, distance/maxDistance * maxLegRotation))
-            .translate(Math.min(60, distance/maxDistance * 60), Math.max(-25, distance/maxDistance * -25))
+            .rotate(torsoRotation + Math.min(maxLegRotation, distance / maxDistance * maxLegRotation))
+            .translate(Math.min(60, distance / maxDistance * 60), Math.max(-25, distance / maxDistance * -25))
     }
-    
+
     mouseMovedHandling() {
         let mouseX = this.processing.mouseX
         let mouseY = this.processing.mouseY
@@ -143,7 +143,7 @@ export default class Engine {
         this.processing.fill(255, 255, 255)
         this.processing.stroke(255, 255, 255)
 
-        if ( this.processing.mouseX - this.playerX) {
+        if (this.processing.mouseX > this.playerX) {
             if (this.sceneRight) {
                 this.sceneRight.setPosition(this.playerX, this.sceneRight.position.y)
                 this.sceneRight.render()
@@ -163,19 +163,22 @@ export default class Engine {
     }
 
     onSocketOpen(evt: any) {
-        if (evt){}
+        if (evt) {
+        }
         this.restart()
         this.connected = true
     }
 
     onSocketMessage(evt: any) {
         let messages = evt.data.split("\n")
-        messages.forEach( (m: string) => {
+        messages.forEach((m: string) => {
             let opCode, data
             [opCode, ...data] = m.split(":")
 
-            switch(opCode) {
-                case 'ID': this.handleID(data); break;
+            switch (opCode) {
+                case 'ID':
+                    this.handleID(data);
+                    break;
                 // case 'R': this.handleShape(data); break;
                 default:
                     break;
@@ -188,14 +191,14 @@ export default class Engine {
     }
 
     static initialize(processing: any, playerName: string) {
-        let w  = window,
-            d  = w.document,
+        let w = window,
+            d = w.document,
             de = d.documentElement,
             db = d.body || d.getElementsByTagName('body')[0],
-            x  = w.innerWidth || de.clientWidth || db.clientWidth,
-            y  = w.innerHeight|| de.clientHeight|| db.clientHeight;
+            x = w.innerWidth || de.clientWidth || db.clientWidth,
+            y = w.innerHeight || de.clientHeight || db.clientHeight;
 
-        processing.size(x,y);
+        processing.size(x, y);
 
         let engine = new Engine(processing, playerName);
 
@@ -208,7 +211,7 @@ export default class Engine {
 
     private createSceneLeft(): Scene {
         let scene: Scene = new Scene(1, this.processing,
-            this.playerX, this.processing.height/2)
+            this.playerX, this.processing.height / 2)
 
         let legScene2: Scene = new Scene(12, this.processing, 0, 0)
         legScene2
@@ -260,14 +263,14 @@ export default class Engine {
                 .addShape(new Rect(3, 4, 101, 35, 30))
                 .addShape(sword)
         }
-        
+
         return scene
     }
-    
+
     private createSceneRight(): Scene {
         // create player scene
         let scene: Scene = new Scene(1, this.processing,
-            this.playerX, this.processing.height/2)
+            this.playerX, this.processing.height / 2)
 
         let legScene2: Scene = new Scene(12, this.processing, 0, 0)
         legScene2
@@ -320,20 +323,20 @@ export default class Engine {
                 .addShape(new Rect(3, 4, 101, 35, 30))
                 .addShape(sword)
         }
-        
+
         return scene
     }
-    
+
     private handleID(data: string[]) {
         console.log("Got ID: " + data[0])
         this.sessionID = parseInt(data[0])
         this.client.send(`I:${this.sessionID}:${this.playerName}`)
 
-        this.playerX = this.processing.width/2
-        
+        this.playerX = this.processing.width / 2
+
         // create player scene
-        this.sceneLeft = this.createSceneLeft() 
-        this.sceneRight = this.createSceneRight() 
+        this.sceneLeft = this.createSceneLeft()
+        this.sceneRight = this.createSceneRight()
     }
 
 }
