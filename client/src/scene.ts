@@ -28,9 +28,6 @@ export default class Scene {
     }
 
     getPosition(): Point {
-        // if (this.parent) {
-        //     return this.position.add(this.parent.getPosition())
-        // }
         return this.position
     }
 
@@ -59,10 +56,6 @@ export default class Scene {
         this.sceneOrdering.push(scene)
         this.recompute()
         return this
-    }
-
-    getShape(id: number): Shape {
-        return this.shapes[id]
     }
 
     getScene(id: number): Scene {
@@ -146,8 +139,16 @@ export default class Scene {
         }
 
         // scenes
-        {
-            this.sceneOrdering.forEach( (scene: Scene) => scene.render())
-        }
+        this.sceneOrdering.forEach( (scene: Scene) => scene.render())
+    }
+
+    collect(collection: Shape[]) {
+        let keys: number[] = Object.keys(this.shapes).map(k => parseInt(k))
+        keys.forEach(k => {
+            let shape: Shape = this.shapes[k]
+            collection.push(shape)
+        })
+
+        this.sceneOrdering.forEach( (scene: Scene) => scene.collect(collection))
     }
 }

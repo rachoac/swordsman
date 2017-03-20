@@ -61,9 +61,9 @@ func (e *Engine) NewPlayer() int64 {
 }
 
 func (e *Engine) broadcastScene(scene *Scene) {
-	for _, rect := range scene.Rects {
-		e.broadcast(e.ProtocolHandler.asRect(rect))
-	}
+	//for _, rect := range scene.Shapes {
+	//	e.broadcast(e.ProtocolHandler.asRect(rect))
+	//}
 }
 
 func (e *Engine) broadcast(message string) {
@@ -154,16 +154,17 @@ func (e *Engine) parseEvent(event string) {
 		}
 		e.sendWorld(playerID)
 	}
-	case "T": {
-		// mouse movement
+	case "U": {
+		// update
 		playerID :=  StringToInt64(parts[1])
-		x :=  StringToInt64(parts[2])
-		//y :=  StringToInt64(parts[3])
+		shapeID :=  StringToInt64(parts[2])
+		pointID :=  StringToInt64(parts[3])
+		x :=  StringToInt64(parts[4])
+		y :=  StringToInt64(parts[5])
 
 		object := e.ObjectContainer.GetObject(playerID)
 		if object != nil {
-			object.X = x
-			object.Y = object.Y
+			object.Scene.Replace(shapeID, pointID, x, y)
 		}
 	}
 		default:

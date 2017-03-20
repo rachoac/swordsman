@@ -14,17 +14,22 @@ class Color {
     }
 }
 
+let pointIDCtr: number = 0
+let shapeIDCtr: number = 0
+
 class Point {
     originalX: number
     originalY: number
     x: number
     y: number
+    id: number
 
     constructor(x: number, y: number) {
         this.x = x
         this.y = y
         this.originalX = x
         this.originalY = y
+        this.id = ++pointIDCtr
     }
 
     add(other: Point): Point {
@@ -94,8 +99,6 @@ class Shape {
         processing.beginShape();
         for ( var i: number = 0; i < this.nodes.length; i++) {
             var from: Point = this.nodes[i];
-            // var to: Point = this.nodes[i >= this.nodes.length - 1 ? 0 : i + 1];
-            // processing.line(from.x, from.y, to.x, to.y);
             processing.vertex(from.x, from.y);
         }
         let first: Point = this.nodes[0]
@@ -149,8 +152,8 @@ class Shape {
 }
 
 class Rect extends Shape {
-    constructor(id: number, x: number, y: number, width: number, height: number) {
-        super(id, [new Point(x, y), new Point(x + width, y), new Point(x + width, y + height), new Point(x, y + height)])
+    constructor(x: number, y: number, width: number, height: number) {
+        super(++shapeIDCtr, [new Point(x, y), new Point(x + width, y), new Point(x + width, y + height), new Point(x, y + height)])
         this.offsetX = -width/2
         this.offsetY = -height * 0.25
     }

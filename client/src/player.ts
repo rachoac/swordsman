@@ -1,9 +1,10 @@
 import Fighter from "./fighter";
+import {Shape} from "./shape";
 
 export default class Player extends Fighter {
 
-    sessionID:number
-    name:string
+    sessionID: number
+    name: string
     walking: boolean
     walkDir: string
     walkCtr: number
@@ -62,7 +63,7 @@ export default class Player extends Fighter {
             return
         }
 
-        if ( this.walkDir === "left") {
+        if (this.walkDir === "left") {
             this.playerX -= 8
         } else {
             this.playerX += 8
@@ -73,7 +74,7 @@ export default class Player extends Fighter {
             this.walkSign *= -1
         }
 
-        if (this.facingDir === "right" ) {
+        if (this.facingDir === "right") {
             // distance from shoulder
             let distance = Math.max(0, this.processing.mouseX - this.playerX)
             let maxDistance = 600
@@ -81,7 +82,7 @@ export default class Player extends Fighter {
             let torsoRotation = Math.min(maxTorsoRotation, distance / maxDistance * maxTorsoRotation)
 
             let walkPct = this.walkCtr / 100
-            let pct = (walkPct <= 0.5 ? (0.5 - walkPct)/0.5 : (walkPct - 0.5)/0.5)
+            let pct = (walkPct <= 0.5 ? (0.5 - walkPct) / 0.5 : (walkPct - 0.5) / 0.5)
 
             this.sceneRight.getScene(11)
                 .rotate(torsoRotation + -pct * Math.PI * 0.15 * (walkPct < 0.5 ? -1 : 1))
@@ -101,7 +102,7 @@ export default class Player extends Fighter {
 
             // distance from shoulder
             let walkPct = this.walkCtr / 100
-            let pct = (walkPct <= 0.5 ? (0.5 - walkPct)/0.5 : (walkPct - 0.5)/0.5)
+            let pct = (walkPct <= 0.5 ? (0.5 - walkPct) / 0.5 : (walkPct - 0.5) / 0.5)
 
             this.sceneLeft.getScene(11)
                 .rotate(-pct * Math.PI * 0.15 * (walkPct < 0.5 ? -1 : 1))
@@ -149,7 +150,6 @@ export default class Player extends Fighter {
         // torso rotation
         let maxTorsoRotation = (Math.PI * 0.05)
         let torsoRotation = Math.min(maxTorsoRotation, distance / maxDistance * maxTorsoRotation)
-        // console.log(distance, maxDistance, torsoRotation, maxTorsoRotation)
         this.sceneLeft.getScene(10).rotate(-torsoRotation)
 
         // // leg rotation right
@@ -194,7 +194,6 @@ export default class Player extends Fighter {
         // torso rotation
         let maxTorsoRotation = (Math.PI * 0.05)
         let torsoRotation = Math.min(maxTorsoRotation, distance / maxDistance * maxTorsoRotation)
-        // console.log(distance, maxDistance, torsoRotation, maxTorsoRotation)
         this.sceneRight.getScene(10).rotate(torsoRotation)
 
         // leg rotation right
@@ -209,5 +208,23 @@ export default class Player extends Fighter {
             .translate(Math.min(60, distance / maxDistance * 60), Math.max(-25, distance / maxDistance * -25))
     }
 
+    handleMouse(mouseX: number, mouseY: number) {
+        if (mouseX > this.playerX) {
+            this.mouseSceneRight(mouseX, mouseY)
+        } else {
+            this.mouseSceneLeft(mouseX, mouseY)
+        }
+    }
+
+    collectShapes(): Shape[] {
+        let shapes: Shape[] = []
+        if (this.facingDir === 'right') {
+            this.sceneRight.collect(shapes)
+        } else {
+            this.sceneLeft.collect(shapes)
+        }
+
+        return shapes
+    }
 
 }

@@ -1,4 +1,5 @@
 import Player from "./player";
+import {Shape, Point} from "./shape";
 
 interface Client {
     send(value: string): void
@@ -56,12 +57,21 @@ export default class Engine {
             this.client.send(`T:${this.sessionID}:${mouseX}:${mouseY}`)
         }
 
-        if (mouseX > this.player.playerX) {
-            this.player.mouseSceneRight(mouseX, mouseY)
-        } else {
-            this.player.mouseSceneLeft(mouseX, mouseY)
-        }
+        this.player.handleMouse(mouseX, mouseY)
 
+        let shapes: Shape[] = this.player.collectShapes()
+        this.transmit(shapes)
+    }
+
+    private transmit(shapes: Shape[]) {
+        shapes.forEach( (shape: Shape) => {
+            let packet: string = `U:${this.sessionID}:${shape.id}`
+            shape.nodes.forEach( (node: Point) => {
+                packet += `:${node.id}:${Math.round(node.x)}:${Math.round(node.y)}`
+            })
+
+            this.client.send(packet)
+        })
     }
 
     update() {
