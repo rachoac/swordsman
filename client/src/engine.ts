@@ -139,19 +139,19 @@ export default class Engine {
     }
 
     update() {
-                this.processing.background(0, 0, 0);
-                this.processing.fill(255, 255, 255)
-                this.processing.stroke(255, 255, 255)
+        this.processing.background(0, 0, 0);
+        this.processing.fill(255, 255, 255)
+        this.processing.stroke(255, 255, 255)
 
-                if ( this.processing.mouseX - this.playerX) {
-                    if (this.sceneRight) {
-                        this.sceneRight.setPosition(this.playerX, this.sceneRight.position.y)
-                        this.sceneRight.render()
-                    }
-                } else {
-                    if (this.sceneLeft) {
-                        this.sceneLeft.setPosition(this.playerX, this.sceneLeft.position.y)
-                        this.sceneLeft.render()
+        if ( this.processing.mouseX - this.playerX) {
+            if (this.sceneRight) {
+                this.sceneRight.setPosition(this.playerX, this.sceneRight.position.y)
+                this.sceneRight.render()
+            }
+        } else {
+            if (this.sceneLeft) {
+                this.sceneLeft.setPosition(this.playerX, this.sceneLeft.position.y)
+                this.sceneLeft.render()
             }
         }
     }
