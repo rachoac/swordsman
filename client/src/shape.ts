@@ -89,21 +89,22 @@ class Shape {
         if (this.needsCompute) {
             this.recompute()
         }
+        if (processing){}
 
-        processing.stroke(0, 0, 0)
-        if (this.color) {
-            processing.fill(this.color.r, this.color.g, this.color.b)
-        } else {
-            processing.fill(255, 255, 255)
-        }
-        processing.beginShape();
-        for ( var i: number = 0; i < this.nodes.length; i++) {
-            var from: Point = this.nodes[i];
-            processing.vertex(from.x, from.y);
-        }
-        let first: Point = this.nodes[0]
-        processing.vertex(first.x, first.y);
-        processing.endShape();
+        // processing.stroke(0, 0, 0)
+        // if (this.color) {
+        //     processing.fill(this.color.r, this.color.g, this.color.b)
+        // } else {
+        //     processing.fill(255, 255, 255)
+        // }
+        // processing.beginShape();
+        // for ( var i: number = 0; i < this.nodes.length; i++) {
+        //     var from: Point = this.nodes[i];
+        //     processing.vertex(from.x, from.y);
+        // }
+        // let first: Point = this.nodes[0]
+        // processing.vertex(first.x, first.y);
+        // processing.endShape();
     }
 
     requireCompute() {

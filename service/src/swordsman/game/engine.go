@@ -19,6 +19,8 @@ type Engine struct {
 
 	hub *Hub
 	seq int64
+
+	dirty bool
 }
 
 func NewEngine(
@@ -61,9 +63,10 @@ func (e *Engine) NewPlayer() int64 {
 }
 
 func (e *Engine) broadcastScene(scene *Scene) {
-	//for _, rect := range scene.Shapes {
-	//	e.broadcast(e.ProtocolHandler.asRect(rect))
-	//}
+	for shapeID, points := range scene.Shapes {
+		e.broadcast(e.ProtocolHandler.asRect(scene.ID, shapeID, points))
+	}
+
 }
 
 func (e *Engine) broadcast(message string) {
@@ -121,10 +124,13 @@ func (e *Engine) MainLoop() {
 			e.Tick = 0
 		}
 
-		for _, object := range e.ObjectContainer.GetObjectsByType("Player") {
-			scene := object.Scene
-			e.broadcastScene(scene)
+		if e.dirty {
+			for _, object := range e.ObjectContainer.GetObjectsByType("Player") {
+				scene := object.Scene
+				e.broadcastScene(scene)
+			}
 		}
+		e.dirty = false
 
 		// sleep for an interval
 		time.Sleep(3 * time.Millisecond)
@@ -143,6 +149,10 @@ func (e *Engine) parseEvent(event string) {
 		if object != nil {
 			// todo
 		}
+	}
+	case "C": {
+		playerID :=  StringToInt64(parts[1])
+		e.broadcast("C:" + Int64ToString(playerID))
 	}
 	case "I": {
 		playerID :=  StringToInt64(parts[1])
@@ -165,6 +175,7 @@ func (e *Engine) parseEvent(event string) {
 		object := e.ObjectContainer.GetObject(playerID)
 		if object != nil {
 			object.Scene.Replace(shapeID, pointID, x, y)
+			e.dirty = true
 		}
 	}
 		default:

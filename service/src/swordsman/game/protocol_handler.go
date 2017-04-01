@@ -8,28 +8,26 @@ func NewProtocolHandler() *ProtocolHandler {
 }
 
 func (e *ProtocolHandler) asNew(object *Object) string {
-	return "N:" + Int64ToString(object.ID) + ":" +
-		object.Code + ":" + Int64ToString(object.X) + ":" +
+	return "N:" +
+		Int64ToString(object.ID) + ":" +
+		object.Code + ":" +
+		Int64ToString(object.X) + ":" +
 		Int64ToString(object.Y) + ":" +
 		object.Name + ":" +
 		Int64ToString(object.Score) + ":" +
 		Int64ToString(object.OriginID)
 }
 
-func (e *ProtocolHandler) asRect(object *Rect) string {
-	return "R:" +
-		Int64ToString(object.ID) + ":" +
-		Int64ToString(object.Points[0].X) + ":" +
-		Int64ToString(object.Points[0].Y) + ":" +
+func (e *ProtocolHandler) asRect(ownerID int64, shapeID int64, points map[int64]*Point) string {
+	packet := "R:" + ownerID + ":"  + Int64ToString(shapeID)
+	for pointId, point := range points {
+		packet += ":" +
+			Int64ToString(pointId) + ":" +
+			Int64ToString(point.X) + ":" +
+			Int64ToString(point.Y)
+	}
 
-		Int64ToString(object.Points[1].X) + ":" +
-		Int64ToString(object.Points[1].Y) + ":" +
-
-		Int64ToString(object.Points[2].X) + ":" +
-		Int64ToString(object.Points[2].Y) + ":" +
-
-		Int64ToString(object.Points[3].X) + ":" +
-		Int64ToString(object.Points[3].Y)
+	return packet
 }
 
 func (e *ProtocolHandler) asRemove(object *Object) string {

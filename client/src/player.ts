@@ -39,9 +39,10 @@ export default class Player extends Fighter {
         this.walkDir = "right"
     }
 
-    update() {
+    update(): boolean {
+        let walked: boolean = false
         if (this.walking) {
-            this.handleWalking()
+            walked = this.handleWalking()
         }
 
         if (this.processing.mouseX > this.playerX) {
@@ -55,12 +56,14 @@ export default class Player extends Fighter {
                 this.sceneLeft.render()
             }
         }
+
+        return walked
     }
 
-    handleWalking() {
+    handleWalking(): boolean {
         if (this.walkDir === "") {
             // not walking
-            return
+            return false
         }
 
         if (this.walkDir === "left") {
@@ -118,6 +121,8 @@ export default class Player extends Fighter {
                     pct * (walkPct < 0.5 ? 5 : -35)
                 )
         }
+
+        return true
     }
 
     mouseSceneLeft(mouseX: number, mouseY: number) {
