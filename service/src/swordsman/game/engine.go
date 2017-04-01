@@ -154,6 +154,14 @@ func (e *Engine) parseEvent(event string) {
 		playerID :=  StringToInt64(parts[1])
 		e.broadcast("C:" + Int64ToString(playerID))
 	}
+	case "S": {
+		// broadcast status
+		e.broadcast(event)
+	}
+	case "W": {
+		// broadcast status
+		e.broadcast(event)
+	}
 	case "I": {
 		playerID :=  StringToInt64(parts[1])
 		name :=  parts[2]

@@ -5,16 +5,20 @@ import (
 )
 
 type Object struct {
-	ID       int64
-	OriginID int64
-	X        int64
-	Y        int64
-	Code	 string
-	Type	 string
+	ID        int64
+	OriginID  int64
+	X         int64
+	Y         int64
+	Angle     float64
+	FacingDir string
+	Distance  int64
 
-	Name     string
-	Score    int64
-	Scene    *Scene
+	Code string
+	Type string
+
+	Name  string
+	Score int64
+	Scene *Scene
 }
 
 type ObjectContainer struct {
@@ -33,11 +37,10 @@ func NewObjectContainer() *ObjectContainer {
 	return &container
 }
 
-
 func (oc *ObjectContainer) CreateBlankObject() *Object {
 	oc.IDSequence = oc.IDSequence + 1
 	return &Object{
-		ID:               oc.IDSequence,
+		ID: oc.IDSequence,
 	}
 }
 

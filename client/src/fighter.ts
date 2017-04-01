@@ -166,7 +166,9 @@ export default class Fighter {
         return scene
     }
 
-    mouseSceneLeft(distance: number, angle1: number) {
+    mouseSceneLeft() {
+        const distance = this.distance
+        const angle1 = this.angle1
         // shoulder rotation - right
         var shoulderRotation = angle1 + (Math.PI * 1.5)
         this.sceneLeft.getScene(2).rotate(shoulderRotation)
@@ -204,7 +206,10 @@ export default class Fighter {
             .translate(distance / maxDistance * -35, distance / maxDistance * 5)
     }
 
-    mouseSceneRight(distance: number, angle1: number) {
+    mouseSceneRight() {
+        const distance = this.distance
+        const angle1 = this.angle1
+
         // shoulder rotation - right
         var shoulderRotation = Math.max((Math.PI * 0.8), Math.min((Math.PI * 2.3), angle1 + (Math.PI * 1.5)))
         this.sceneRight.getScene(2).rotate(shoulderRotation)
@@ -247,25 +252,14 @@ export default class Fighter {
         this.distance = distance
         if (facingRight) {
             this.facingDir = "right"
-            this.mouseSceneRight(distance, angle1)
+            this.mouseSceneRight()
         } else {
             this.facingDir = "left"
-            this.mouseSceneLeft(distance, angle1)
+            this.mouseSceneLeft()
         }
     }
 
-    handleWalking(): boolean {
-        if (this.walkDir === "") {
-            // not walking
-            return false
-        }
-
-        if (this.walkDir === "left") {
-            this.playerX -= 8
-        } else {
-            this.playerX += 8
-        }
-
+    handleWalking() {
         this.walkCtr += this.walkSign
         if (this.walkCtr > 100 || this.walkCtr < 0) {
             this.walkSign *= -1
@@ -314,8 +308,6 @@ export default class Fighter {
                     pct * (walkPct < 0.5 ? 5 : -35)
                 )
         }
-
-        return true
     }
 
     collectShapes(): Shape[] {

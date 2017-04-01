@@ -13,8 +13,15 @@ export default class Player extends Fighter {
 
     update(): boolean {
         let walked: boolean = false
-        if (this.walking) {
-            walked = this.handleWalking()
+        if (this.walking && this.walkDir !== "") {
+            if (this.walkDir === "left") {
+                this.playerX -= 8
+            } else {
+                this.playerX += 8
+            }
+
+            this.handleWalking()
+            walked = true
         }
 
         if (this.facingDir === "right") {

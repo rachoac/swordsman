@@ -19,7 +19,7 @@ func (e *ProtocolHandler) asNew(object *Object) string {
 }
 
 func (e *ProtocolHandler) asRect(ownerID int64, shapeID int64, points map[int64]*Point) string {
-	packet := "R:" + ownerID + ":"  + Int64ToString(shapeID)
+	packet := "R:" + Int64ToString(ownerID) + ":"  + Int64ToString(shapeID)
 	for pointId, point := range points {
 		packet += ":" +
 			Int64ToString(pointId) + ":" +
