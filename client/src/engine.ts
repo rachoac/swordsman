@@ -36,7 +36,7 @@ export default class Engine {
 
         this.player.stopWalking()
         if (this.walking) {
-            this.transmitWalkingStatus()
+            this.transmitWalkingStatus(false)
         }
         this.walking = false
     }
@@ -49,23 +49,24 @@ export default class Engine {
         let keyCode = this.processing.keyCode
         if (keyCode === 65) {
             if (!this.walking) {
-                this.transmitWalkingStatus()
+                this.transmitWalkingStatus(true)
             }
             this.player.walkLeft()
             this.walking = true
         }
         if (keyCode === 68) {
             if (!this.walking) {
-                this.transmitWalkingStatus()
+                this.transmitWalkingStatus(true)
             }
             this.player.walkRight()
             this.walking = true
         }
     }
 
-    transmitWalkingStatus() {
-        let packet: string = `W:${this.sessionID}:${this.walking}:${this.player.walkDir}`
+    transmitWalkingStatus(walking: boolean) {
+        let packet: string = `W:${this.sessionID}:${walking}:${this.player.walkDir}`
         this.client.send(packet)
+        this.doTransmit = true
     }
 
     mouseMovedHandling() {
@@ -114,6 +115,7 @@ export default class Engine {
         const k1: number[] = Object.keys(this.players).map(k => parseInt(k)).sort()
         k1.forEach( (playerID: number) => {
             const player: Player = this.players[playerID]
+            if (player.walking) player.handleWalking()
             player.render()
         })
     }
@@ -221,12 +223,13 @@ export default class Engine {
         const walking = walkingStr == "true"
 
         const player: Player = this.players[ownerId]
-        if (!player) {
+        if (!player || player.sessionID == this.sessionID) {
             return
         }
         if (walking) {
             player.walkDir = walkDir
             player.walking = walking
+            player.handleWalking()
         } else {
             player.stopWalking()
         }

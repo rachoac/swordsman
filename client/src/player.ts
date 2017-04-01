@@ -24,16 +24,10 @@ export default class Player extends Fighter {
             walked = true
         }
 
-        if (this.facingDir === "right") {
-            if (this.sceneRight) {
-                this.sceneRight.setPosition(this.playerX, this.sceneRight.position.y)
-                this.sceneRight.render()
-            }
-        } else {
-            if (this.sceneLeft) {
-                this.sceneLeft.setPosition(this.playerX, this.sceneLeft.position.y)
-                this.sceneLeft.render()
-            }
+        if (this.facingDir === "right" && this.sceneRight) {
+            this.sceneRight.setPosition(this.playerX, this.sceneRight.position.y)
+        } else if (this.sceneLeft) {
+            this.sceneLeft.setPosition(this.playerX, this.sceneLeft.position.y)
         }
 
         return walked
