@@ -92,7 +92,7 @@ export default class Engine {
             return
         }
 
-        if (this.player.update(this.processing.mouseX) || this.doTransmit) {
+        if (this.player.update() || this.doTransmit) {
             let shapes: Shape[] = this.player.collectShapes()
             this.transmit(shapes)
             this.doTransmit = false

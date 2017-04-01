@@ -9,6 +9,8 @@ export default class Fighter {
     processing: any
     facingDir: string
     playerX: number
+    angle1: number
+    distance: number
 
     walking: boolean
     walkDir: string
@@ -165,8 +167,6 @@ export default class Fighter {
     }
 
     mouseSceneLeft(distance: number, angle1: number) {
-        this.facingDir = "left"
-
         // shoulder rotation - right
         var shoulderRotation = angle1 + (Math.PI * 1.5)
         this.sceneLeft.getScene(2).rotate(shoulderRotation)
@@ -205,8 +205,6 @@ export default class Fighter {
     }
 
     mouseSceneRight(distance: number, angle1: number) {
-        this.facingDir = "right"
-
         // shoulder rotation - right
         var shoulderRotation = Math.max((Math.PI * 0.8), Math.min((Math.PI * 2.3), angle1 + (Math.PI * 1.5)))
         this.sceneRight.getScene(2).rotate(shoulderRotation)
@@ -244,7 +242,19 @@ export default class Fighter {
             .translate(Math.min(60, distance / maxDistance * 60), Math.max(-25, distance / maxDistance * -25))
     }
 
-    handleWalking(distance: number): boolean {
+    orient(facingRight: boolean, distance: number, angle1: number) {
+        this.angle1 = angle1
+        this.distance = distance
+        if (facingRight) {
+            this.facingDir = "right"
+            this.mouseSceneRight(distance, angle1)
+        } else {
+            this.facingDir = "left"
+            this.mouseSceneLeft(distance, angle1)
+        }
+    }
+
+    handleWalking(): boolean {
         if (this.walkDir === "") {
             // not walking
             return false
@@ -265,7 +275,7 @@ export default class Fighter {
             // distance from shoulder
             let maxDistance = 600
             let maxTorsoRotation = (Math.PI * 0.05)
-            let torsoRotation = Math.min(maxTorsoRotation, distance / maxDistance * maxTorsoRotation)
+            let torsoRotation = Math.min(maxTorsoRotation, this.distance / maxDistance * maxTorsoRotation)
 
             let walkPct = this.walkCtr / 100
             let pct = (walkPct <= 0.5 ? (0.5 - walkPct) / 0.5 : (walkPct - 0.5) / 0.5)

@@ -11,14 +11,13 @@ export default class Player extends Fighter {
         this.name = name
     }
 
-    update(mouseX: number): boolean {
+    update(): boolean {
         let walked: boolean = false
         if (this.walking) {
-            let distance = Math.max(0, mouseX - this.playerX)
-            walked = this.handleWalking(distance)
+            walked = this.handleWalking()
         }
 
-        if (mouseX > this.playerX) {
+        if (this.facingDir === "right") {
             if (this.sceneRight) {
                 this.sceneRight.setPosition(this.playerX, this.sceneRight.position.y)
                 this.sceneRight.render()
@@ -39,9 +38,9 @@ export default class Player extends Fighter {
         let angle1: number = this.processing.atan2(dy, dx)
 
         if (mouseX > this.playerX) {
-            this.mouseSceneRight(Math.max(0, mouseX - this.playerX), angle1)
+            this.orient(true, Math.max(0, mouseX - this.playerX), angle1)
         } else {
-            this.mouseSceneLeft(Math.max(0, this.playerX - mouseX), angle1)
+            this.orient(false, Math.max(0, this.playerX - mouseX), angle1)
         }
     }
 
