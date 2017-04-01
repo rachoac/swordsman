@@ -1,5 +1,6 @@
 import Scene from "./scene";
 import {Rect, Point, Color} from "./shape";
+import {Shape} from "./shape";
 
 export default class Fighter {
 
@@ -17,9 +18,28 @@ export default class Fighter {
     constructor(processing: any, playerX: number) {
         this.processing = processing
         this.playerX = playerX
+        this.walkCtr = 0
+        this.walkSign = 5
 
         this.sceneLeft = this.createSceneLeft()
         this.sceneRight = this.createSceneRight()
+    }
+
+    stopWalking() {
+        this.walking = false
+        this.walkDir = ""
+        this.walkCtr = 0
+        this.walkSign = 5
+    }
+
+    walkLeft() {
+        this.walking = true
+        this.walkDir = "left"
+    }
+
+    walkRight() {
+        this.walking = true
+        this.walkDir = "right"
     }
 
     setFacingDir(facingDir: string) {
@@ -286,6 +306,17 @@ export default class Fighter {
         }
 
         return true
+    }
+
+    collectShapes(): Shape[] {
+        let shapes: Shape[] = []
+        if (this.facingDir === 'right') {
+            this.sceneRight.collect(shapes)
+        } else {
+            this.sceneLeft.collect(shapes)
+        }
+
+        return shapes
     }
 
     render() {

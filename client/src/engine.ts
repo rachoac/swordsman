@@ -14,6 +14,7 @@ export default class Engine {
     processing: any
     player: Player
     remotePlayers: NumberKeyedMap<NumberKeyedMap<NumberKeyedMap<Point>>>
+    doTransmit: boolean
 
     constructor(processing: any, playerName: string) {
         this.playerName = playerName
@@ -68,8 +69,7 @@ export default class Engine {
             this.client.send(packet)
         }
 
-        let shapes: Shape[] = this.player.collectShapes()
-        this.transmit(shapes)
+        this.doTransmit = true
     }
 
     private transmit(shapes: Shape[]) {
@@ -92,9 +92,10 @@ export default class Engine {
             return
         }
 
-        if (this.player.update(this.processing.mouseX)) {
+        if (this.player.update(this.processing.mouseX) || this.doTransmit) {
             let shapes: Shape[] = this.player.collectShapes()
             this.transmit(shapes)
+            this.doTransmit = false
         }
 
         // this.player.render()

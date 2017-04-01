@@ -1,5 +1,4 @@
 import Fighter from "./fighter";
-import {Shape} from "./shape";
 
 export default class Player extends Fighter {
 
@@ -10,29 +9,6 @@ export default class Player extends Fighter {
         super(processing, playerX)
         this.sessionID = sessionID;
         this.name = name
-        this.walkCtr = 0
-        this.walkSign = 5
-    }
-
-    updatePlayerX(delta: number) {
-        this.playerX += delta
-    }
-
-    stopWalking() {
-        this.walking = false
-        this.walkDir = ""
-        this.walkCtr = 0
-        this.walkSign = 5
-    }
-
-    walkLeft() {
-        this.walking = true
-        this.walkDir = "left"
-    }
-
-    walkRight() {
-        this.walking = true
-        this.walkDir = "right"
     }
 
     update(mouseX: number): boolean {
@@ -67,17 +43,6 @@ export default class Player extends Fighter {
         } else {
             this.mouseSceneLeft(Math.max(0, this.playerX - mouseX), angle1)
         }
-    }
-
-    collectShapes(): Shape[] {
-        let shapes: Shape[] = []
-        if (this.facingDir === 'right') {
-            this.sceneRight.collect(shapes)
-        } else {
-            this.sceneLeft.collect(shapes)
-        }
-
-        return shapes
     }
 
 }
