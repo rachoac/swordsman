@@ -11,6 +11,14 @@ type Scene struct {
 type Shape struct {
 	Label string
 	Points map[int64]*Point
+	X1 int64
+	Y1 int64
+	X2 int64
+	Y2 int64
+}
+
+func (b *Shape) Collision(other *Shape) bool {
+	return !(other.X1 > b.X2 || other.X2 < b.X1 || other.Y1 > b.Y2 || other.Y2 < b.Y1)
 }
 
 func NewScene(ID int64, x int64, y int64) *Scene {
@@ -21,7 +29,7 @@ func NewScene(ID int64, x int64, y int64) *Scene {
 	return &scene
 }
 
-func (s *Scene) Replace(shapeID int64, label string, pointID int64, x int64, y int64) *Scene {
+func (s *Scene) Replace(shapeID int64, label string, pointID int64, x int64, y int64, pointLabel string) *Scene {
 	shape := s.Shapes[shapeID]
 	if shape == nil {
 		shape = &(Shape{Points: make(map[int64]*Point)})
@@ -47,6 +55,16 @@ func (s *Scene) Replace(shapeID int64, label string, pointID int64, x int64, y i
 	}
 	point.X = x
 	point.Y = y
+
+	if pointLabel == "tl" {
+		shape.X1 = point.X
+		shape.Y1 = point.Y
+	}
+	if pointLabel == "br" {
+		shape.X2 = point.X
+		shape.Y2 = point.Y
+	}
+
 	return s
 }
 

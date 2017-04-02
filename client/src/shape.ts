@@ -23,6 +23,7 @@ class Point {
     x: number
     y: number
     id: number
+    label: string
 
     constructor(x: number, y: number) {
         this.x = x
@@ -35,6 +36,12 @@ class Point {
     add(other: Point): Point {
         return new Point(other.x + this.x, other.y + this.y)
     }
+
+    setLabel(label: string): Point {
+        this.label = label
+        return this
+    }
+
 }
 
 interface ShapeVisitor {
@@ -161,7 +168,12 @@ class Shape {
 
 class Rect extends Shape {
     constructor(x: number, y: number, width: number, height: number) {
-        super(++shapeIDCtr, [new Point(x, y), new Point(x + width, y), new Point(x + width, y + height), new Point(x, y + height)])
+        super(++shapeIDCtr, [
+            new Point(x, y).setLabel('tl'),
+            new Point(x + width, y).setLabel('tr'),
+            new Point(x + width, y + height).setLabel('br'),
+            new Point(x, y + height).setLabel('bl')
+        ])
         this.offsetX = -width/2
         this.offsetY = -height * 0.25
     }

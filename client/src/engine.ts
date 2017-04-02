@@ -100,7 +100,7 @@ export default class Engine {
         shapes.forEach( (shape: Shape) => {
             let packet: string = `U:${this.sessionID}:${shape.id}:${shape.label}`
             shape.nodes.forEach( (node: Point) => {
-                packet += `:${node.id}:${Math.round(node.x)}:${Math.round(node.y)}`
+                packet += `:${node.id}:${Math.round(node.x)}:${Math.round(node.y)}:${node.label}`
             })
 
             this.client.send(packet)

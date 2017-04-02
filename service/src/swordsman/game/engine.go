@@ -169,10 +169,11 @@ func (e *Engine) parseEvent(event string) {
 		pointID :=  StringToInt64(parts[4])
 		x :=  StringToInt64(parts[5])
 		y :=  StringToInt64(parts[6])
+		pointLabel := parts[7]
 
 		object := e.ObjectContainer.GetObject(playerID)
 		if object != nil {
-			object.Scene.Replace(shapeID, label, pointID, x, y)
+			object.Scene.Replace(shapeID, label, pointID, x, y, pointLabel)
 		}
 	}
 		default:
