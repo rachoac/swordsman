@@ -1,5 +1,6 @@
 import Player from "./player";
 import {NumberKeyedMap} from "./util"
+import {Shape, Point} from "./shape";
 
 interface Client {
     send(value: string): void
@@ -94,6 +95,17 @@ export default class Engine {
     private transmit() {
         let packet: string = `S:${this.sessionID}:${this.player.playerX}:${this.player.facingDir}:${this.player.distance}:${this.player.angle1}`
         this.client.send(packet)
+
+        let shapes: Shape[] = this.player.collectShapes()
+        shapes.forEach( (shape: Shape) => {
+            let packet: string = `U:${this.sessionID}:${shape.id}:${shape.label}`
+            shape.nodes.forEach( (node: Point) => {
+                packet += `:${node.id}:${Math.round(node.x)}:${Math.round(node.y)}`
+            })
+
+            this.client.send(packet)
+        })
+
     }
 
     update() {

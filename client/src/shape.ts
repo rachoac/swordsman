@@ -56,6 +56,7 @@ class Shape {
     parent: Scene
     needsCompute: boolean
     color: Color
+    label: string
 
     constructor(id: number, nodes?: Point[]) {
         this.id = id
@@ -66,6 +67,10 @@ class Shape {
         this.translateY = 0
         this.rotation = 0
         this.needsCompute = true
+    }
+
+    setLabel(label: string) {
+        this.label = label
     }
 
     setColor(color: Color) {
