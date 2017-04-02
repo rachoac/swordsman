@@ -20,7 +20,7 @@ type Engine struct {
 	hub *Hub
 	seq int64
 
-	dirty bool
+	//dirty bool
 }
 
 func NewEngine(
@@ -124,13 +124,13 @@ func (e *Engine) MainLoop() {
 			e.Tick = 0
 		}
 
-		if e.dirty {
-			for _, object := range e.ObjectContainer.GetObjectsByType("Player") {
-				scene := object.Scene
-				e.broadcastScene(scene)
-			}
-		}
-		e.dirty = false
+		//if e.dirty {
+		//	for _, object := range e.ObjectContainer.GetObjectsByType("Player") {
+		//		scene := object.Scene
+		//		e.broadcastScene(scene)
+		//	}
+		//}
+		//e.dirty = false
 
 		// sleep for an interval
 		time.Sleep(3 * time.Millisecond)
@@ -183,7 +183,7 @@ func (e *Engine) parseEvent(event string) {
 		object := e.ObjectContainer.GetObject(playerID)
 		if object != nil {
 			object.Scene.Replace(shapeID, pointID, x, y)
-			e.dirty = true
+			//e.dirty = true
 		}
 	}
 		default:

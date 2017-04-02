@@ -205,6 +205,11 @@ export default class Engine {
     private handleStatus(data: string[]) {
         const [ ownerIdStr, playerXStr, facingDir, distanceStr, angle1Str] = data
         const ownerId = parseInt(ownerIdStr)
+
+        if (ownerId == this.sessionID) {
+            return
+        }
+
         const playerX = parseInt(playerXStr)
         const distance = parseFloat(distanceStr)
         const angle1 = parseFloat(angle1Str)
