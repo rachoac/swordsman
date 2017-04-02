@@ -69,17 +69,20 @@ class Shape {
         this.needsCompute = true
     }
 
-    setLabel(label: string) {
+    setLabel(label: string): Shape {
         this.label = label
+        return this
     }
 
-    setColor(color: Color) {
+    setColor(color: Color): Shape {
         this.color = color
+        return this
     }
 
-    addNode(...nodes: Point[]) {
+    addNode(...nodes: Point[]): Shape {
         nodes.forEach( n => this.nodes.push(n))
         this.requireCompute()
+        return this
     }
 
     clear() {
