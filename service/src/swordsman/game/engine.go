@@ -140,8 +140,12 @@ func (e *Engine) parseEvent(event string) {
 		}
 	}
 	case "C": {
-		playerID :=  StringToInt64(parts[1])
+		playerID := StringToInt64(parts[1])
 		e.broadcast("C:" + Int64ToString(playerID))
+		object := e.ObjectContainer.GetObject(playerID)
+		if object != nil {
+			object.Scene.ClearShapes()
+		}
 	}
 	case "S": {
 		// broadcast status
@@ -150,6 +154,7 @@ func (e *Engine) parseEvent(event string) {
 	case "W": {
 		// broadcast status
 		e.broadcast(event)
+		e.analyzeCollisions()
 	}
 	case "I": {
 		playerID :=  StringToInt64(parts[1])
@@ -166,18 +171,90 @@ func (e *Engine) parseEvent(event string) {
 		playerID :=  StringToInt64(parts[1])
 		shapeID :=  StringToInt64(parts[2])
 		label := parts[3]
-		pointID :=  StringToInt64(parts[4])
-		x :=  StringToInt64(parts[5])
-		y :=  StringToInt64(parts[6])
-		pointLabel := parts[7]
 
 		object := e.ObjectContainer.GetObject(playerID)
 		if object != nil {
-			object.Scene.Replace(shapeID, label, pointID, x, y, pointLabel)
+			{
+				pointID :=  StringToInt64(parts[4])
+				x :=  StringToInt64(parts[5])
+				y :=  StringToInt64(parts[6])
+				pointLabel := parts[7]
+				object.Scene.Replace(shapeID, label, pointID, x, y, pointLabel)
+			}
+			{
+				pointID :=  StringToInt64(parts[8])
+				x :=  StringToInt64(parts[9])
+				y :=  StringToInt64(parts[10])
+				pointLabel := parts[11]
+				object.Scene.Replace(shapeID, label, pointID, x, y, pointLabel)
+			}
+			{
+				pointID :=  StringToInt64(parts[12])
+				x :=  StringToInt64(parts[13])
+				y :=  StringToInt64(parts[14])
+				pointLabel := parts[15]
+				object.Scene.Replace(shapeID, label, pointID, x, y, pointLabel)
+			}
+			{
+				pointID :=  StringToInt64(parts[16])
+				x :=  StringToInt64(parts[17])
+				y :=  StringToInt64(parts[18])
+				pointLabel := parts[19]
+				object.Scene.Replace(shapeID, label, pointID, x, y, pointLabel)
+			}
+
+			e.analyzeCollisions()
 		}
+
 	}
 		default:
 		// nothing
+	}
+}
+
+func (e *Engine) struck(player1 *Object, player2 *Object) *Shape {
+	if player1.Scene == nil || player2.Scene == nil {
+		return nil
+	}
+
+	sword := player1.Scene.Sword
+	if sword == nil {
+		return nil
+	}
+
+	head := player2.Scene.Head
+	if head != nil && head.Collision(sword) {
+		return head
+	}
+
+	for _, v := range player2.Scene.Body {
+		if v.Collision(sword) {
+			return v
+		}
+	}
+
+	return nil
+}
+
+func (e *Engine) handleStrike(striker *Object, struck  *Object, struckPart *Shape) {
+	e.broadcast(e.ProtocolHandler.asStrike(striker, struck, struckPart))
+}
+
+func (e *Engine) analyzeCollisions() {
+	players := e.ObjectContainer.GetObjectsByType("Player")
+	for _, player1 := range players {
+		for _, player2 := range players {
+			if player1.ID == player2.ID {
+				// don't analyze against self
+				continue
+			}
+
+			struckPart := e.struck(player1, player2)
+			if struckPart != nil {
+				e.handleStrike(player1, player2, struckPart)
+				return
+			}
+		}
 	}
 }
 

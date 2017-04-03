@@ -1,4 +1,5 @@
 import Fighter from "./fighter";
+import {Color, Shape} from "./shape";
 
 export default class Player extends Fighter {
 
@@ -42,6 +43,27 @@ export default class Player extends Fighter {
             this.orient(true, Math.max(0, mouseX - this.playerX), angle1)
         } else {
             this.orient(false, Math.max(0, this.playerX - mouseX), angle1)
+        }
+    }
+
+    strike(shapeLabel: string) {
+        {
+            const shape: Shape | undefined = this.sceneLeft.getShapeByLabel(shapeLabel)
+            if (shape) {
+                shape.setColor(new Color(255, 0, 0, 255))
+                setTimeout( () => {
+                    shape.setColor(new Color(255, 255, 255, 255))
+                }, 250)
+            }
+        }
+        {
+            const shape: Shape | undefined = this.sceneRight.getShapeByLabel(shapeLabel)
+            if (shape) {
+                shape.setColor(new Color(255, 0, 0, 255))
+                setTimeout( () => {
+                    shape.setColor(new Color(255, 255, 255, 255))
+                }, 250)
+            }
         }
     }
 

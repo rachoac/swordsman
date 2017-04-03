@@ -54,8 +54,8 @@ export default class Fighter {
 
         let legScene2: Scene = new Scene(12, this.processing, 0, 0)
         legScene2
-            .addShape(new Rect(0, 135, 60, 80).rotate(Math.PI * 0.04).setLabel('body'))
-            .addShape(new Rect(8, 210, 50, 120).rotate(-Math.PI * 0.04).setLabel('body'))
+            .addShape(new Rect(0, 135, 60, 80).rotate(Math.PI * 0.04).setLabel('body1'))
+            .addShape(new Rect(8, 210, 50, 120).rotate(-Math.PI * 0.04).setLabel('body2'))
         scene.addScene(legScene2)
 
         let armScene2: Scene = new Scene(4, this.processing, 10, 0)
@@ -75,14 +75,14 @@ export default class Fighter {
 
         let legScene: Scene = new Scene(11, this.processing, 0, 0)
         legScene
-            .addShape(new Rect(0, 140, 60, 80).rotate(Math.PI * 0.05).setLabel('body'))
-            .addShape(new Rect(10, 215, 50, 120).rotate(-Math.PI * 0.05).setLabel('body'))
+            .addShape(new Rect(0, 140, 60, 80).rotate(Math.PI * 0.05).setLabel('body3'))
+            .addShape(new Rect(10, 215, 50, 120).rotate(-Math.PI * 0.05).setLabel('body4'))
 
         scene.addScene(legScene)
 
         bodyScene
-            .addShape(new Rect(0, 0, 80, 100).setLabel('body'))
-            .addShape(new Rect(5, 101, 70, 50).setLabel('body'))
+            .addShape(new Rect(0, 0, 80, 100).setLabel('body5'))
+            .addShape(new Rect(5, 101, 70, 50).setLabel('body6'))
             .addShape(new Rect(10, -52, 50, 50).setLabel('head'))
 
         let armScene: Scene = new Scene(2, this.processing, 10, 0)
@@ -114,8 +114,8 @@ export default class Fighter {
 
         let legScene2: Scene = new Scene(12, this.processing, 0, 0)
         legScene2
-            .addShape(new Rect(8, 135, 60, 80).rotate(-Math.PI * 0.04).setLabel('body'))
-            .addShape(new Rect(18, 210, 50, 120).rotate(Math.PI * 0.04).setLabel('body'))
+            .addShape(new Rect(8, 135, 60, 80).rotate(-Math.PI * 0.04).setLabel('body1'))
+            .addShape(new Rect(18, 210, 50, 120).rotate(Math.PI * 0.04).setLabel('body2'))
         scene.addScene(legScene2)
 
         let armScene2: Scene = new Scene(4, this.processing, 0, 0)
@@ -135,14 +135,14 @@ export default class Fighter {
 
         let legScene: Scene = new Scene(11, this.processing, 0, 0)
         legScene
-            .addShape(new Rect(10, 140, 60, 80).rotate(-Math.PI * 0.05).setLabel('body'))
-            .addShape(new Rect(20, 215, 50, 120).rotate(Math.PI * 0.05).setLabel('body'))
+            .addShape(new Rect(10, 140, 60, 80).rotate(-Math.PI * 0.05).setLabel('body3'))
+            .addShape(new Rect(20, 215, 50, 120).rotate(Math.PI * 0.05).setLabel('body4'))
 
         scene.addScene(legScene)
 
         bodyScene
-            .addShape(new Rect(0, 0, 80, 100).setLabel('body'))
-            .addShape(new Rect(5, 101, 70, 50).setLabel('body'))
+            .addShape(new Rect(0, 0, 80, 100).setLabel('body5'))
+            .addShape(new Rect(5, 101, 70, 50).setLabel('body6'))
             .addShape(new Rect(20, -52, 50, 50).setLabel('head'))
 
         let armScene: Scene = new Scene(2, this.processing, 0, 0)

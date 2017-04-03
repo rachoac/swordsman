@@ -1,9 +1,10 @@
 import {Shape, Point} from "./shape";
-import {NumberKeyedMap} from "./util"
+import {NumberKeyedMap, StringKeyedMap} from "./util"
 
 export default class Scene {
     id: number
     shapes: NumberKeyedMap<Shape>
+    shapesByLabel: StringKeyedMap<Shape>
     scenes: NumberKeyedMap<Scene>
     sceneOrdering: Scene[]
     processing: any
@@ -18,6 +19,7 @@ export default class Scene {
         this.id = id
         this.processing = processing
         this.shapes = {}
+        this.shapesByLabel = {}
         this.scenes = {}
         this.sceneOrdering = []
         this.rotation = 0
@@ -45,6 +47,9 @@ export default class Scene {
 
     addShape(shape: Shape): Scene {
         this.shapes[shape.id] = shape
+        if (shape.label) {
+            this.shapesByLabel[shape.label] = shape
+        }
         shape.parent = this
         this.recompute()
         return this
@@ -150,5 +155,26 @@ export default class Scene {
         })
 
         this.sceneOrdering.forEach( (scene: Scene) => scene.collect(collection))
+    }
+
+    getShapeByLabel(shapeLabel: string): Shape | undefined {
+        // first try local
+        if (this.shapesByLabel[shapeLabel]) {
+            return this.shapesByLabel[shapeLabel]
+        }
+
+        let shape: Shape | undefined = undefined
+        this.sceneOrdering.forEach( (scene: Scene) => {
+            if (shape) {
+                return
+            }
+
+            shape = scene.getShapeByLabel(shapeLabel)
+            if (shape) {
+                return
+            }
+        })
+
+        return shape
     }
 }

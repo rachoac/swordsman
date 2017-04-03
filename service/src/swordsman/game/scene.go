@@ -1,5 +1,7 @@
 package game
 
+import "strings"
+
 type Scene struct {
 	ID int64
 	Shapes map[int64]*Shape
@@ -9,6 +11,7 @@ type Scene struct {
 }
 
 type Shape struct {
+	ID int64
 	Label string
 	Points map[int64]*Point
 	X1 int64
@@ -29,6 +32,13 @@ func NewScene(ID int64, x int64, y int64) *Scene {
 	return &scene
 }
 
+func (s *Scene) ClearShapes() {
+	s.Shapes = make(map[int64]*Shape)
+	s.Sword = nil
+	s.Body = make(map[int64]*Shape)
+	s.Head = nil
+}
+
 func (s *Scene) Replace(shapeID int64, label string, pointID int64, x int64, y int64, pointLabel string) *Scene {
 	shape := s.Shapes[shapeID]
 	if shape == nil {
@@ -36,14 +46,15 @@ func (s *Scene) Replace(shapeID int64, label string, pointID int64, x int64, y i
 		s.Shapes[shapeID] = shape
 	}
 	shape.Label = label
+	shape.ID = shapeID
 
-	if label == "sword" {
+	if strings.Index(label, "sword") > -1 {
 		s.Sword = shape
 	}
-	if label == "head" {
+	if strings.Index(label, "head") > -1 {
 		s.Head = shape
 	}
-	if label == "body" {
+	if strings.Index(label, "body") > -1 {
 		s.Body[shapeID] = shape
 	}
 

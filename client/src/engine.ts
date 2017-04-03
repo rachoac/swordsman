@@ -162,6 +162,8 @@ export default class Engine {
                     break;
                 case 'W': this.handleWalking(data);
                     break;
+                case 'Y': this.handleStrike(data);
+                    break;
                 default:
                     break;
             }
@@ -250,6 +252,18 @@ export default class Engine {
         } else {
             player.stopWalking()
         }
+    }
+
+    private handleStrike(data: string[]) {
+        const [ strikerIDStr, struckIDStr, shapeLabel ]: string[] = data
+        if (strikerIDStr){}
+
+        const struckPlayer: Player = this.players[parseInt(struckIDStr)]
+        if (!struckPlayer) {
+            return
+        }
+
+        struckPlayer.strike(shapeLabel)
     }
 
 }

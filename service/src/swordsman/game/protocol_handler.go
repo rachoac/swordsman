@@ -30,6 +30,15 @@ func (e *ProtocolHandler) asRect(ownerID int64, shapeID int64, points map[int64]
 	return packet
 }
 
+func (e *ProtocolHandler) asStrike(striker *Object, struck  *Object, struckPart *Shape) string {
+	packet := "Y:" +
+		Int64ToString(striker.ID) + ":" +
+		Int64ToString(struck.ID) + ":" +
+		struckPart.Label
+
+	return packet
+}
+
 func (e *ProtocolHandler) asRemove(object *Object) string {
 	return "R:" + Int64ToString(object.ID)
 }
